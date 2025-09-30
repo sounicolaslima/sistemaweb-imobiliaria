@@ -4,9 +4,10 @@ from docxtpl import DocxTemplate, RichText
 import os, json
 
 def app():
-    # ----------------- Caminho absoluto do arquivo Word -----------------
-    CAMINHO_DOCX = r"C:\Users\nicol\OneDrive\Desktop\Gerador_de_ficha_cadastral\fichaCadastral.docx"
-    ARQUIVO_DADOS = "dados.json"
+    # ----------------- Caminho relativo do arquivo Word -----------------
+    base_dir = os.path.dirname(__file__)  # pasta onde está o script
+    CAMINHO_DOCX = os.path.join(base_dir, "fichaCadastral.docx")  # template
+    ARQUIVO_DADOS = os.path.join(base_dir, "dados.json")  # JSON de dados
 
     # ----------------- Funções JSON -----------------
     def carregar_todos():
@@ -165,7 +166,7 @@ def app():
         render_data = {**dados, "fiadores": fiadores_richtext}
         doc.render(render_data)
 
-        pasta_saida = "FichasGeradas"
+        pasta_saida = os.path.join(base_dir, "FichasGeradas")
         os.makedirs(pasta_saida, exist_ok=True)
         nome_locatario_clean = nomeLocatario.replace(" ", "_") if nomeLocatario else "SemNome"
         data_contrato_clean = dataEntrada.replace("/", "-") if dataEntrada else "SemData"

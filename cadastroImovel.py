@@ -1,9 +1,13 @@
+# fichaCaptacao.py
 import streamlit as st
 from docxtpl import DocxTemplate
 import os
 from datetime import datetime
 
-CAMINHO_DOCX = "Ficha_de_captacao.docx"
+# ----------------- Caminhos relativos -----------------
+base_dir = os.path.dirname(__file__)  # pasta do script
+CAMINHO_DOCX = os.path.join(base_dir, "Ficha_de_captacao.docx")  # template
+PASTA_SAIDA = os.path.join(base_dir, "captacaoImoveis")  # pasta de saída
 
 def gerar_ficha(dados):
     try:
@@ -14,14 +18,13 @@ def gerar_ficha(dados):
         doc = DocxTemplate(CAMINHO_DOCX)
         doc.render(dados)
 
-        pasta_saida = "captacaoImoveis"
-        os.makedirs(pasta_saida, exist_ok=True)
+        os.makedirs(PASTA_SAIDA, exist_ok=True)
 
         endereco = dados.get("enderecoImovel", "SemEndereco").strip().replace(" ", "_")
         data_atual = datetime.today().strftime("%Y-%m-%d")
         nome_arquivo = f"Ficha_{endereco}_{data_atual}.docx"
 
-        caminho_arquivo = os.path.join(pasta_saida, nome_arquivo)
+        caminho_arquivo = os.path.join(PASTA_SAIDA, nome_arquivo)
         doc.save(caminho_arquivo)
 
         st.success("✅ Ficha gerada com sucesso!")
