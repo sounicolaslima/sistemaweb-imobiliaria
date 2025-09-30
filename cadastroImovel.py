@@ -3,7 +3,7 @@ from docxtpl import DocxTemplate
 import os
 from datetime import datetime
 
-CAMINHO_DOCX = "ficha_de_captacao.docx"
+CAMINHO_DOCX = "Ficha_de_captacao.docx"
 
 def gerar_ficha(dados):
     try:
