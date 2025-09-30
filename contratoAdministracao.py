@@ -22,13 +22,13 @@ dados_todos = carregar_todos()
 def gerar_contrato(dados):
     try:
         if not os.path.exists("contrato_administracao.docx"):
-            st.error("Arquivo do contrato não encontrado na pasta.")
+            st.error("Arquivo 'contrato_administracao.docx' não encontrado na pasta!")
             return
 
         doc = DocxTemplate("contrato_administracao.docx")
         cpf = dados.get("CPFLocatario")
         if not cpf:
-            st.error("CPF do locatário é obrigatório para salvar.")
+            st.error("CPF do Locatário é obrigatório!")
             return
 
         # Características do imóvel
@@ -42,14 +42,14 @@ def gerar_contrato(dados):
         # Renderiza contrato
         doc.render(dados)
 
+        # Salva o arquivo
         pasta_saida = "ContratosAdministracaoGerados"
         os.makedirs(pasta_saida, exist_ok=True)
-
         nome_arquivo = f"Contrato_{cpf}_{datetime.today().strftime('%Y%m%d')}.docx"
         caminho = os.path.join(pasta_saida, nome_arquivo)
         doc.save(caminho)
 
-        # Botão de download no estilo do exemplo
+        # Botão de download
         with open(caminho, "rb") as f:
             st.success("✅ Contrato gerado com sucesso!")
             st.download_button("📥 Baixar Contrato", f, file_name=nome_arquivo, key="download_contrato_admin")
@@ -77,12 +77,13 @@ def app():
     # CPF do Locatário
     col1, col2 = st.columns([2,1])
     with col1:
-        cpf = st.text_input("CPF do Locatário", key="cpf_admin")
+        cpf_input = st.text_input("CPF do Locatário", key="cpf_admin")
+        dados_ficha["CPFLocatario"] = cpf_input
     with col2:
         if st.button("Carregar por CPF", key="btn_carregar_admin"):
-            dados_ficha.update(carregar_por_cpf(cpf))
+            dados_ficha.update(carregar_por_cpf(cpf_input))
 
-    # ---------------- Função para criar campos ----------------
+    # Função para criar campos com colunas
     def criar_campos(campos, dados, n_col=2, prefix=""):
         res = {}
         cols = st.columns(n_col)
@@ -93,7 +94,7 @@ def app():
             col_index = (col_index + 1) % n_col
         return res
 
-    # Proprietário
+    # ---------------- Proprietário ----------------
     st.subheader("Dados do Proprietário")
     campos_proprietario = [
         ("nomeProprietario","Nome"),("RGProprietario","RG"),("CPFProprietario","CPF"),
@@ -102,24 +103,24 @@ def app():
     ]
     dados_ficha.update(criar_campos(campos_proprietario, dados_ficha, n_col=2, prefix="prop"))
 
-    # Dados Bancários
+    # ---------------- Dados Bancários ----------------
     st.subheader("Dados Bancários")
     campos_banco = [
         ("banco","Banco"),("agencia","Agência"),("conta","Conta Corrente"),("declaracaoImposto","Declaração IR")
     ]
     dados_ficha.update(criar_campos(campos_banco, dados_ficha, n_col=2, prefix="banco"))
 
-    # Imóvel
+    # ---------------- Imóvel ----------------
     st.subheader("Imóvel Objeto da Administração")
     dados_ficha.update({"enderecoImovel": st.text_input("Endereço", value=dados_ficha.get("enderecoImovel",""), key="endereco_imovel")})
 
-    # Características do imóvel
+    # ---------------- Características do imóvel ----------------
     st.subheader("Características do Imóvel")
     caracteristicas = dados_ficha.get("caracteristicasImovel", [])
     carac_input = st.text_area("Digite cada característica separada por vírgula", value=", ".join(caracteristicas), key="carac_imovel")
     dados_ficha["caracteristicasImovel"] = [c.strip() for c in carac_input.split(",")]
 
-    # Serviços e Tributos
+    # ---------------- Serviços e Tributos ----------------
     st.subheader("Serviços e Tributos")
     campos_servicos = [
         ("matriculaCopasa","COPASA Matrícula"),("hidrometro","Nº Hidrômetro"),
@@ -128,7 +129,7 @@ def app():
     ]
     dados_ficha.update(criar_campos(campos_servicos, dados_ficha, n_col=2, prefix="serv"))
 
-    # Contrato
+    # ---------------- Contrato ----------------
     st.subheader("Dados do Contrato")
     campos_contrato = [
         ("dataAluguel","Dia do Pagamento"),("dataInicioContrato","Data Início"),
@@ -136,7 +137,7 @@ def app():
     ]
     dados_ficha.update(criar_campos(campos_contrato, dados_ficha, n_col=2, prefix="contrato"))
 
-    # Testemunhas
+    # ---------------- Testemunhas ----------------
     st.subheader("Testemunhas")
     campos_testemunhas = [
         ("nomeTestemunha1","Nome Testemunha 1"),("CPFTestemunha1","CPF Testemunha 1"),
@@ -144,6 +145,6 @@ def app():
     ]
     dados_ficha.update(criar_campos(campos_testemunhas, dados_ficha, n_col=2, prefix="test"))
 
-    # Botão gerar contrato
+    # ---------------- Botão gerar contrato ----------------
     if st.button("Gerar Contrato", key="btn_gerar_admin"):
         gerar_contrato(dados_ficha)

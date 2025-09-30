@@ -94,4 +94,3 @@ def app():
 
     if st.button("Gerar Ficha de Captação", key="gerar_ficha_captacao"):
         gerar_ficha(dados_ficha)
-

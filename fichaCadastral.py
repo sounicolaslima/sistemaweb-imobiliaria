@@ -1,89 +1,182 @@
+# fichaCadastral.py
 import streamlit as st
-from docxtpl import DocxTemplate
-import os
-from datetime import datetime
-
-TEMPLATE = "fichaCadastral.docx"
+from docxtpl import DocxTemplate, RichText
+import os, json
 
 def app():
-    st.title("📄 Gerador de Ficha Cadastral")
+    # ----------------- Caminho absoluto do arquivo Word -----------------
+    CAMINHO_DOCX = r"C:\Users\nicol\OneDrive\Desktop\Gerador_de_ficha_cadastral\fichaCadastral.docx"
+    ARQUIVO_DADOS = "dados.json"
 
-    # ---------------- Locatário ----------------
-    st.header("Dados do Locatário")
-    cpf = st.text_input("CPF do Locatário", key="cpf_locatario_ficha")
-    nomeLocatario = st.text_input("Nome do Locatário", key="nome_locatario_ficha")
-    RG = st.text_input("RG do Locatário", key="rg_locatario_ficha")
-    endereco = st.text_input("Endereço do Locatário", key="endereco_locatario_ficha")
-    valorLocacao = st.text_input("Valor da Locação", key="valor_locacao_ficha")
-    dataEntrada = st.date_input("Data de Entrada", key="data_entrada_ficha")
-    dataVenc = st.text_input("Dia de vencimento", key="data_venc_ficha")
-    celular = st.text_input("Celular", key="celular_locatario_ficha")
-    email = st.text_input("E-mail", key="email_locatario_ficha")
-
-    # ---------------- Fiadores ----------------
-    st.header("Fiadores")
-    fiadores = []
-    num_fiadores = st.number_input("Quantos fiadores deseja incluir?", min_value=0, max_value=5, value=1, key="num_fiadores_ficha")
-
-    for i in range(num_fiadores):
-        st.subheader(f"Fiador {i+1}")
-        nome = st.text_input(f"Nome do Fiador {i+1}", key=f"nome_fiador_{i}_ficha")
-        rg = st.text_input(f"RG do Fiador {i+1}", key=f"rg_fiador_{i}_ficha")
-        cpf_f = st.text_input(f"CPF do Fiador {i+1}", key=f"cpf_fiador_{i}_ficha")
-        end = st.text_input(f"Endereço do Fiador {i+1}", key=f"endereco_fiador_{i}_ficha")
-        cel = st.text_input(f"Celular do Fiador {i+1}", key=f"cel_fiador_{i}_ficha")
-        email_f = st.text_input(f"E-mail do Fiador {i+1}", key=f"email_fiador_{i}_ficha")
-        if nome or rg or cpf_f:
-            fiadores.append({
-                "nome": nome, "rg": rg, "cpf": cpf_f,
-                "end": end, "cel": cel, "email": email_f
-            })
-
-    # ---------------- Proprietário ----------------
-    st.header("Proprietário")
-    nomeProprietario = st.text_input("Nome do Proprietário", key="nome_proprietario_ficha")
-    RGProprietario = st.text_input("RG do Proprietário", key="rg_proprietario_ficha")
-    CPFProprietario = st.text_input("CPF do Proprietário", key="cpf_proprietario_ficha")
-    enderecoProprietario = st.text_input("Endereço do Proprietário", key="endereco_proprietario_ficha")
-    celProprietario = st.text_input("Celular do Proprietário", key="cel_proprietario_ficha")
-    emailProprietario = st.text_input("E-mail do Proprietário", key="email_proprietario_ficha")
-
-    # ---------------- Botão ----------------
-    if st.button("Gerar Ficha Cadastral", key="gerar_ficha_ficha"):
-        if not os.path.exists(TEMPLATE):
-            st.error("⚠️ Modelo 'fichaCadastral.docx' não encontrado na pasta!")
-        elif not cpf or not nomeLocatario:
-            st.error("⚠️ CPF e Nome do Locatário são obrigatórios!")
+    # ----------------- Funções JSON -----------------
+    def carregar_todos():
+        if os.path.exists(ARQUIVO_DADOS):
+            try:
+                with open(ARQUIVO_DADOS, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except (json.JSONDecodeError, ValueError):
+                with open(ARQUIVO_DADOS, "w", encoding="utf-8") as f:
+                    json.dump({}, f)
+                return {}
         else:
-            doc = DocxTemplate(TEMPLATE)
-            dados = {
-                "cpf": cpf,
-                "nomeLocatario": nomeLocatario,
-                "RG": RG,
-                "endereco": endereco,
-                "valorLocacao": valorLocacao,
-                "dataEntrada": dataEntrada.strftime("%d/%m/%Y"),
-                "dataVenc": dataVenc,
-                "celular": celular,
-                "email": email,
-                "nomeProprietario": nomeProprietario,
-                "RGProprietario": RGProprietario,
-                "CPFProprietario": CPFProprietario,
-                "enderecoProprietario": enderecoProprietario,
-                "celProprietario": celProprietario,
-                "emailProprietario": emailProprietario,
-                "fiadores": fiadores
-            }
+            with open(ARQUIVO_DADOS, "w", encoding="utf-8") as f:
+                json.dump({}, f)
+            return {}
 
-            # Gera o documento
-            doc.render(dados)
-            pasta_saida = "FichasGeradas"
-            os.makedirs(pasta_saida, exist_ok=True)
-            nome_arquivo = f"Ficha_{nomeLocatario}_{datetime.today().strftime('%Y%m%d')}.docx"
-            caminho = os.path.join(pasta_saida, nome_arquivo)
-            doc.save(caminho)
+    def salvar_todos(dados):
+        with open(ARQUIVO_DADOS, "w", encoding="utf-8") as f:
+            json.dump(dados, f, ensure_ascii=False, indent=4)
 
-            # Botão de download
-            with open(caminho, "rb") as f:
-                st.success("✅ Ficha gerada com sucesso!")
-                st.download_button("📥 Baixar Ficha Cadastral", f, file_name=nome_arquivo, key="download_ficha_ficha")
+    dados_todos = carregar_todos()
+    st.title("FICHA CADASTRAL")
+
+    # ----------------- Identificação Locatário -----------------
+    st.subheader("Identificação do Locatário")
+    cpf = st.text_input("CPF do Locatário")
+    if st.button("Carregar por CPF"):
+        if cpf in dados_todos:
+            dados = dados_todos[cpf]
+            st.session_state.update(dados)
+            st.success(f"Dados carregados para CPF {cpf}")
+        else:
+            st.info(f"Nenhum dado encontrado para CPF {cpf}")
+
+    # ----------------- Dados do Locatário -----------------
+    st.subheader("Dados do Locatário")
+    nomeLocatario = st.text_input("Nome")
+    RG = st.text_input("RG")
+    endereco = st.text_input("Endereço")
+    valorLocacao = st.text_input("Valor Locação")
+    dataEntrada = st.text_input("Data Entrada")
+    dataVenc = st.text_input("Vencimento")
+    celular = st.text_input("Celular")
+    email = st.text_input("E-mail")
+
+    # ----------------- Fiadores -----------------
+    st.subheader("Fiadores")
+    if "fiadores" not in st.session_state:
+        st.session_state.fiadores = []
+    if st.button("Adicionar Fiador"):
+        st.session_state.fiadores.append({
+            "nome": "", "rg": "", "cpf": "", "end": "", "cel": "", "email": ""
+        })
+    for idx, f in enumerate(st.session_state.fiadores):
+        st.markdown(f"**Fiador {idx+1}**")
+        f["nome"] = st.text_input(f"Nome Fiador {idx+1}", f.get("nome", ""), key=f"nome{idx}")
+        f["rg"] = st.text_input(f"RG Fiador {idx+1}", f.get("rg", ""), key=f"rg{idx}")
+        f["cpf"] = st.text_input(f"CPF Fiador {idx+1}", f.get("cpf", ""), key=f"cpf{idx}")
+        f["end"] = st.text_input(f"Endereço Fiador {idx+1}", f.get("end", ""), key=f"end{idx}")
+        f["cel"] = st.text_input(f"Celular Fiador {idx+1}", f.get("cel", ""), key=f"cel{idx}")
+        f["email"] = st.text_input(f"E-mail Fiador {idx+1}", f.get("email", ""), key=f"email{idx}")
+
+    # ----------------- Proprietário -----------------
+    st.subheader("Dados do Proprietário")
+    nomeProprietario = st.text_input("Nome Proprietário")
+    RGProprietario = st.text_input("RG Proprietário")
+    CPFProprietario = st.text_input("CPF Proprietário")
+    enderecoProprietario = st.text_input("Endereço Proprietário")
+    celProprietario = st.text_input("Celular Proprietário")
+    emailProprietario = st.text_input("E-mail Proprietário")
+
+    # ----------------- Dados Bancários -----------------
+    st.subheader("Dados Bancários")
+    banco = st.text_input("Banco")
+    agencia = st.text_input("Agência")
+    conta = st.text_input("Conta Corrente")
+    declaracaoImposto = st.text_input("Declaração IR")
+
+    # ----------------- Dados do Imóvel -----------------
+    st.subheader("Dados do Imóvel")
+    enderecoImovel = st.text_input("Endereço do Imóvel")
+
+    # ----------------- Características -----------------
+    st.subheader("Características do Imóvel")
+    if "caracteristicas" not in st.session_state:
+        st.session_state.caracteristicas = []
+    if st.button("Adicionar Característica"):
+        st.session_state.caracteristicas.append("")
+    for i, carac in enumerate(st.session_state.caracteristicas):
+        st.session_state.caracteristicas[i] = st.text_input(f"Característica {i+1}", carac, key=f"carac{i}")
+
+    # ----------------- Serviços e Tributos -----------------
+    st.subheader("Serviços e Tributos")
+    CemigInstal = st.text_input("CEMIG Instalação")
+    matriculaCopasa = st.text_input("COPASA Matrícula")
+    IPTU = st.text_input("IPTU")
+
+    # ----------------- Função gerar ficha -----------------
+    def gerar_ficha_streamlit():
+        if not os.path.exists(CAMINHO_DOCX):
+            st.error(f"Arquivo {CAMINHO_DOCX} não encontrado.")
+            return None
+
+        doc = DocxTemplate(CAMINHO_DOCX)
+        dados = {
+            "cpf": cpf,
+            "nomeLocatario": nomeLocatario,
+            "RG": RG,
+            "endereco": endereco,
+            "valorLocacao": valorLocacao,
+            "dataEntrada": dataEntrada,
+            "dataVenc": dataVenc,
+            "celular": celular,
+            "email": email,
+            "nomeProprietario": nomeProprietario,
+            "RGProprietario": RGProprietario,
+            "CPFProprietario": CPFProprietario,
+            "enderecoProprietario": enderecoProprietario,
+            "celProprietario": celProprietario,
+            "emailProprietario": emailProprietario,
+            "banco": banco,
+            "agencia": agencia,
+            "conta": conta,
+            "declaracaoImposto": declaracaoImposto,
+            "enderecoImovel": enderecoImovel,
+            "CemigInstal": CemigInstal,
+            "matriculaCopasa": matriculaCopasa,
+            "IPTU": IPTU
+        }
+
+        # Características
+        caracteristicas = [c for c in st.session_state.caracteristicas if c.strip()]
+        dados["caracteristicaImovel"] = ", ".join(caracteristicas)
+
+        # Fiadores
+        lista_fiadores_json = []
+        for f in st.session_state.fiadores:
+            if f["nome"] or f["rg"] or f["cpf"]:
+                bloco = f"Nome: {f['nome']}\nRG: {f['rg']}\nCPF: {f['cpf']}\nEndereço: {f['end']}\nCelular: {f['cel']}\nE-mail: {f['email']}"
+                lista_fiadores_json.append(bloco)
+
+        dados_todos[cpf] = {**dados, "fiadores": lista_fiadores_json}
+        salvar_todos(dados_todos)
+
+        fiadores_richtext = []
+        for f in lista_fiadores_json:
+            linhas = f.split("\n")
+            rt = RichText()
+            for linha in linhas:
+                if ":" in linha:
+                    chave, valor = linha.split(":", 1)
+                    rt.add(chave + ": ", bold=True)
+                    rt.add(valor.strip() + "\n")
+            fiadores_richtext.append(rt)
+
+        render_data = {**dados, "fiadores": fiadores_richtext}
+        doc.render(render_data)
+
+        pasta_saida = "FichasGeradas"
+        os.makedirs(pasta_saida, exist_ok=True)
+        nome_locatario_clean = nomeLocatario.replace(" ", "_") if nomeLocatario else "SemNome"
+        data_contrato_clean = dataEntrada.replace("/", "-") if dataEntrada else "SemData"
+        caminho_arquivo = os.path.join(pasta_saida, f"Ficha_{nome_locatario_clean}_{data_contrato_clean}.docx")
+        doc.save(caminho_arquivo)
+        return caminho_arquivo
+
+    # ----------------- Botão gerar/download -----------------
+    if st.button("Gerar Ficha e Baixar"):
+        arquivo = gerar_ficha_streamlit()
+        if arquivo:
+            with open(arquivo, "rb") as f:
+                st.download_button("Clique aqui para baixar a ficha", f, file_name=os.path.basename(arquivo))
+            st.success(f"Ficha gerada: {arquivo}")
