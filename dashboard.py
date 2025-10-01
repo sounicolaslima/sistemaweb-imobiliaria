@@ -110,51 +110,30 @@ def dashboard():
         st.markdown("---")
         st.markdown("### Escolha o gerador que deseja usar:")
 
-        # Card estilo vidro fosco
-        card_style = """
-        <div style="
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            text-align: center;
-            margin-bottom: 20px;
-        ">
-        """
-
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            st.markdown(card_style, unsafe_allow_html=True)
             if st.button("📄 Gerar Ficha Cadastral", key="ficha_cadastral"):
                 mudar_pagina("ficha_cadastral")
             if st.button("📝 Gerar Contrato Administrativo", key="contrato_admin"):
                 mudar_pagina("contrato_administrativo")
-            
 
         with col2:
-            st.markdown(card_style, unsafe_allow_html=True)
             if st.button("📃 Gerar Contrato", key="contrato"):
                 mudar_pagina("contrato")
             if st.button("🏠 Gerar Ficha de Captação", key="ficha_captacao"):
                 mudar_pagina("ficha_captacao")
-            
 
         with col3:
-            st.markdown(card_style, unsafe_allow_html=True)
             if st.button("📋 Gerar Termo de Vistoria", key="termo_vistoria"):
                 mudar_pagina("termo_vistoria")
             if st.button("📋 Recibo", key="recibo"):
                 mudar_pagina("recibo")
-            
 
-        # Planilhas com estilo vidro
+        # Planilhas, também sem fundo branco
         st.markdown("---")
         col_a, col_b = st.columns(2)
         with col_a:
-            st.markdown(card_style, unsafe_allow_html=True)
             st.markdown(
                 """
                 <div style='text-align:center; margin-top:10px'>
@@ -166,10 +145,8 @@ def dashboard():
                 """,
                 unsafe_allow_html=True
             )
-            
 
         with col_b:
-            st.markdown(card_style, unsafe_allow_html=True)
             st.markdown(
                 """
                 <div style='text-align:center; margin-top:10px'>
@@ -181,7 +158,6 @@ def dashboard():
                 """,
                 unsafe_allow_html=True
             )
-            
 
     # Chamando scripts
     else:
@@ -211,3 +187,4 @@ if not st.session_state.logged_in:
     login()
 else:
     dashboard()
+
