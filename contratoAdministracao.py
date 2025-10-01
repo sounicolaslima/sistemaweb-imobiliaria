@@ -155,4 +155,3 @@ def app():
     # ---------------- Botão gerar contrato ----------------
     if st.button("Gerar Contrato", key="btn_gerar_admin"):
         gerar_contrato(dados_ficha)
-

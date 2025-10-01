@@ -1,4 +1,3 @@
-# fichaCaptacao.py
 import streamlit as st
 from docxtpl import DocxTemplate
 import os
@@ -29,9 +28,10 @@ def gerar_ficha(dados):
 
         st.success("✅ Ficha gerada com sucesso!")
         st.download_button(
-            "📥 Baixar Ficha de Captação",
-            buffer,
+            label="📥 Baixar Ficha de Captação",
+            data=buffer,
             file_name=nome_arquivo,
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             key="download_ficha_captacao"
         )
     except Exception as e:
@@ -99,5 +99,7 @@ def app():
                     dados_ficha[campo] = "✓" if cols[col_index].checkbox(label, key=key_name) else ""
                     col_index = (col_index + 1) % col_count
 
+    # botão para gerar a ficha e habilitar download
     if st.button("Gerar Ficha de Captação", key="gerar_ficha_captacao"):
         gerar_ficha(dados_ficha)
+

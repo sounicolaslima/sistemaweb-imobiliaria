@@ -181,6 +181,11 @@ def app():
             data_contrato_clean = dataEntrada.replace("/", "-") if dataEntrada else "SemData"
             nome_arquivo = f"Ficha_{nome_locatario_clean}_{data_contrato_clean}.docx"
 
-            st.download_button("Clique aqui para baixar a ficha", arquivo, file_name=nome_arquivo)
+            st.download_button(
+            label="📥 Clique aqui para baixar a ficha",
+            data=arquivo,
+            file_name=nome_arquivo,
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
             st.success("Ficha gerada com sucesso!")
 

@@ -81,7 +81,13 @@ def gerar_contrato(dados):
 
         # Botão de download
         st.success("✅ Contrato gerado com sucesso!")
-        st.download_button("📥 Baixar Contrato", buffer, file_name=nome_arquivo, key="download_contrato_locacao")
+        st.download_button(
+        label="📥 Baixar Contrato",
+        data=buffer,
+        file_name=nome_arquivo,
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        key="download_contrato_locacao"
+        )
 
     except Exception as e:
         st.error(f"Erro ao gerar contrato: {e}")
