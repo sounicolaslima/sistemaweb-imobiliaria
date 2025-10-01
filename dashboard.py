@@ -29,27 +29,40 @@ usuarios = carregar_usuarios()
 
 # ----------------- Função de Login -----------------
 def login():
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        # Logo menor e centralizada
+    # Colunas para centralizar o card
+    col_left, col_center, col_right = st.columns([1,2,1])
+    with col_center:
+        # Card branco com sombra e borda arredondada
+        st.markdown(
+            """
+            <div style="
+                background-color: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                text-align: center;
+            ">
+            """,
+            unsafe_allow_html=True
+        )
+
+        # Logo
         if os.path.exists("villares.png"):
             logo = Image.open("villares.png")
             st.image(logo, width=220)
-        else:
-            st.warning("Arquivo villares.png não encontrado.")
 
-        # Título centralizado
+        # Título
         st.markdown(
-            "<h2 style='text-align:center; margin-top:10px;'>🔒 Login - Sistema Web Villares Imóveis</h2>",
+            "<h2 style='margin-top:10px;'>🔒 Login - Sistema Web Villares Imóveis</h2>",
             unsafe_allow_html=True
         )
-        st.markdown("---")
+        st.markdown("<hr>", unsafe_allow_html=True)
 
         # Campos de login
         user = st.text_input("Usuário")
         pwd = st.text_input("Senha", type="password")
 
-        # Botão centralizado
+        # Botão centralizado e estilizado
         st.markdown(
             """
             <style>
@@ -70,7 +83,6 @@ def login():
             unsafe_allow_html=True
         )
 
-        # Validação
         if st.button("Entrar"):
             if user in usuarios and usuarios[user] == pwd:
                 st.session_state.logged_in = True
@@ -80,12 +92,16 @@ def login():
             else:
                 st.error("Usuário ou senha incorretos")
 
+        # Fechar o card
+        st.markdown("</div>", unsafe_allow_html=True)
+
 # ----------------- Função para mudar de página -----------------
 def mudar_pagina(pagina):
     st.session_state.pagina = pagina
 
 # ----------------- Dashboard -----------------
 def dashboard():
+    # Sidebar com usuário logado
     st.sidebar.markdown(f"👤 Logado como: **{st.session_state.usuario}**")
     if st.sidebar.button("Sair"):
         st.session_state.logged_in = False
@@ -173,4 +189,3 @@ if not st.session_state.logged_in:
     login()
 else:
     dashboard()
-
