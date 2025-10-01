@@ -2,6 +2,7 @@ import streamlit as st
 from docxtpl import DocxTemplate
 import os, json
 from datetime import datetime
+from io import BytesIO  # usado para gerar arquivo em memória
 
 # ---------------- Configuração JSON ----------------
 ARQUIVO_DADOS = "dados.json"
@@ -42,17 +43,23 @@ def gerar_contrato(dados):
         # Renderiza contrato
         doc.render(dados)
 
-        # Salva o arquivo
-        pasta_saida = "ContratosAdministracaoGerados"
-        os.makedirs(pasta_saida, exist_ok=True)
-        nome_arquivo = f"Contrato_{cpf}_{datetime.today().strftime('%Y%m%d')}.docx"
-        caminho = os.path.join(pasta_saida, nome_arquivo)
-        doc.save(caminho)
+        # Gera arquivo em memória
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
 
-        # Botão de download
-        with open(caminho, "rb") as f:
-            st.success("✅ Contrato gerado com sucesso!")
-            st.download_button("📥 Baixar Contrato", f, file_name=nome_arquivo, key="download_contrato_admin")
+        # Nome do arquivo
+        nome_arquivo = f"Contrato_{cpf}_{datetime.today().strftime('%Y%m%d')}.docx"
+
+        # Botão de download direto
+        st.success("✅ Contrato gerado com sucesso!")
+        st.download_button(
+            "📥 Baixar Contrato",
+            buffer,
+            file_name=nome_arquivo,
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            key="download_contrato_admin"
+        )
 
     except Exception as e:
         st.error(f"Erro ao gerar contrato: {e}")
@@ -148,3 +155,4 @@ def app():
     # ---------------- Botão gerar contrato ----------------
     if st.button("Gerar Contrato", key="btn_gerar_admin"):
         gerar_contrato(dados_ficha)
+

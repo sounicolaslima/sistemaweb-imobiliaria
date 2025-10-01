@@ -3,11 +3,11 @@ import streamlit as st
 from docxtpl import DocxTemplate
 import os
 from datetime import datetime
+from io import BytesIO
 
 # ----------------- Caminhos relativos -----------------
 base_dir = os.path.dirname(__file__)  # pasta do script
 CAMINHO_DOCX = os.path.join(base_dir, "Ficha_de_captacao.docx")  # template
-PASTA_SAIDA = os.path.join(base_dir, "captacaoImoveis")  # pasta de saída
 
 def gerar_ficha(dados):
     try:
@@ -18,18 +18,22 @@ def gerar_ficha(dados):
         doc = DocxTemplate(CAMINHO_DOCX)
         doc.render(dados)
 
-        os.makedirs(PASTA_SAIDA, exist_ok=True)
-
         endereco = dados.get("enderecoImovel", "SemEndereco").strip().replace(" ", "_")
         data_atual = datetime.today().strftime("%Y-%m-%d")
         nome_arquivo = f"Ficha_{endereco}_{data_atual}.docx"
 
-        caminho_arquivo = os.path.join(PASTA_SAIDA, nome_arquivo)
-        doc.save(caminho_arquivo)
+        # 🔹 salvar apenas em memória
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
 
         st.success("✅ Ficha gerada com sucesso!")
-        with open(caminho_arquivo, "rb") as f:
-            st.download_button("📥 Baixar Ficha de Captação", f, file_name=nome_arquivo, key="download_ficha_captacao")
+        st.download_button(
+            "📥 Baixar Ficha de Captação",
+            buffer,
+            file_name=nome_arquivo,
+            key="download_ficha_captacao"
+        )
     except Exception as e:
         st.error(f"Erro ao gerar ficha: {e}")
 

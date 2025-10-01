@@ -2,6 +2,7 @@ import streamlit as st
 from docxtpl import DocxTemplate, RichText
 import os, json
 from datetime import datetime
+from io import BytesIO
 
 # ---------------- Configuração JSON ----------------
 ARQUIVO_DADOS = "dados.json"
@@ -69,19 +70,18 @@ def gerar_contrato(dados):
         render_data = {**dados, "fiadores": fiadores_richtext}
         doc.render(render_data)
 
-        # Salva o arquivo
-        pasta_saida = "contratos"
-        os.makedirs(pasta_saida, exist_ok=True)
+        # 🔹 Gerar apenas em memória
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
+
         nome_locatario = dados.get("nomeLocatario","SemNome").replace(" ", "_")
         data_contrato = dados.get("dataContrato","SemData").replace("/", "-")
         nome_arquivo = f"Contrato_{nome_locatario}_{data_contrato}.docx"
-        caminho_arquivo = os.path.join(pasta_saida, nome_arquivo)
-        doc.save(caminho_arquivo)
 
         # Botão de download
-        with open(caminho_arquivo, "rb") as f:
-            st.success("✅ Contrato gerado com sucesso!")
-            st.download_button("📥 Baixar Contrato", f, file_name=nome_arquivo, key="download_contrato_locacao")
+        st.success("✅ Contrato gerado com sucesso!")
+        st.download_button("📥 Baixar Contrato", buffer, file_name=nome_arquivo, key="download_contrato_locacao")
 
     except Exception as e:
         st.error(f"Erro ao gerar contrato: {e}")
@@ -152,7 +152,11 @@ def app():
 
     # ---------------- Características do Imóvel ----------------
     st.subheader("Características do Imóvel")
-    carac_input = st.text_area("Digite as características separadas por vírgula", value=", ".join(dados_ficha.get("caracteristicasImovel", [])), key="carac_imovel")
+    carac_input = st.text_area(
+        "Digite as características separadas por vírgula",
+        value=", ".join(dados_ficha.get("caracteristicasImovel", [])),
+        key="carac_imovel"
+    )
     dados_ficha["caracteristicasImovel"] = [c.strip() for c in carac_input.split(",")]
 
     # ---------------- Serviços e Tributos ----------------

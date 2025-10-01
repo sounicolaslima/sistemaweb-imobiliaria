@@ -2,6 +2,7 @@
 import streamlit as st
 from docxtpl import DocxTemplate, RichText
 import os, json
+from io import BytesIO
 
 def app():
     # ----------------- Caminho relativo do arquivo Word -----------------
@@ -166,18 +167,20 @@ def app():
         render_data = {**dados, "fiadores": fiadores_richtext}
         doc.render(render_data)
 
-        pasta_saida = os.path.join(base_dir, "FichasGeradas")
-        os.makedirs(pasta_saida, exist_ok=True)
-        nome_locatario_clean = nomeLocatario.replace(" ", "_") if nomeLocatario else "SemNome"
-        data_contrato_clean = dataEntrada.replace("/", "-") if dataEntrada else "SemData"
-        caminho_arquivo = os.path.join(pasta_saida, f"Ficha_{nome_locatario_clean}_{data_contrato_clean}.docx")
-        doc.save(caminho_arquivo)
-        return caminho_arquivo
+        # Salvar apenas em memória
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
+        return buffer
 
     # ----------------- Botão gerar/download -----------------
     if st.button("Gerar Ficha e Baixar"):
         arquivo = gerar_ficha_streamlit()
         if arquivo:
-            with open(arquivo, "rb") as f:
-                st.download_button("Clique aqui para baixar a ficha", f, file_name=os.path.basename(arquivo))
-            st.success(f"Ficha gerada: {arquivo}")
+            nome_locatario_clean = nomeLocatario.replace(" ", "_") if nomeLocatario else "SemNome"
+            data_contrato_clean = dataEntrada.replace("/", "-") if dataEntrada else "SemData"
+            nome_arquivo = f"Ficha_{nome_locatario_clean}_{data_contrato_clean}.docx"
+
+            st.download_button("Clique aqui para baixar a ficha", arquivo, file_name=nome_arquivo)
+            st.success("Ficha gerada com sucesso!")
+
