@@ -39,7 +39,7 @@ def login():
 
         # Título centralizado
         st.markdown("<h3 style='text-align: center;'>Sistema Villares Imóveis</h3>", unsafe_allow_html=True)
-        # Removido <hr> para evitar linha no meio da tela
+        
 
         # Campo de usuário centralizado
         col_user1, col_user2, col_user3 = st.columns([1, 2, 1])
@@ -132,7 +132,7 @@ def dashboard():
                 mudar_pagina("ficha_cadastral")
             if st.button("📝 Gerar Contrato Administrativo", key="contrato_admin"):
                 mudar_pagina("contrato_administrativo")
-            st.markdown("</div>", unsafe_allow_html=True)
+            
 
         with col2:
             st.markdown(card_style, unsafe_allow_html=True)
@@ -140,7 +140,7 @@ def dashboard():
                 mudar_pagina("contrato")
             if st.button("🏠 Gerar Ficha de Captação", key="ficha_captacao"):
                 mudar_pagina("ficha_captacao")
-            st.markdown("</div>", unsafe_allow_html=True)
+            
 
         with col3:
             st.markdown(card_style, unsafe_allow_html=True)
@@ -148,7 +148,7 @@ def dashboard():
                 mudar_pagina("termo_vistoria")
             if st.button("📋 Recibo", key="recibo"):
                 mudar_pagina("recibo")
-            st.markdown("</div>", unsafe_allow_html=True)
+            
 
         # Planilhas com estilo vidro
         st.markdown("---")
@@ -166,7 +166,7 @@ def dashboard():
                 """,
                 unsafe_allow_html=True
             )
-            st.markdown("</div>", unsafe_allow_html=True)
+            
 
         with col_b:
             st.markdown(card_style, unsafe_allow_html=True)
@@ -181,7 +181,7 @@ def dashboard():
                 """,
                 unsafe_allow_html=True
             )
-            st.markdown("</div>", unsafe_allow_html=True)
+            
 
     # Chamando scripts
     else:
