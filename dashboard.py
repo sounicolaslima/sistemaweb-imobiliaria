@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
-import json
 import os
+import json
 
 # ----------------- Configuração da página -----------------
 st.set_page_config(page_title="Dashboard Villares", layout="wide")
@@ -21,79 +21,68 @@ def carregar_usuarios():
     if os.path.exists(ARQUIVO_USUARIOS):
         with open(ARQUIVO_USUARIOS, "r", encoding="utf-8") as f:
             return json.load(f)
-    else:
-        st.error(f"Arquivo {ARQUIVO_USUARIOS} não encontrado!")
-        return {}
+    return {}
 
 usuarios = carregar_usuarios()
 
 # ----------------- Função de Login -----------------
 def login():
-    # Colunas para centralizar o card
-    col_left, col_center, col_right = st.columns([1,2,1])
-    with col_center:
-        # Card branco com sombra e borda arredondada
-        st.markdown(
-            """
-            <div style="
-                background-color: white;
-                padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                text-align: center;
-            ">
-            """,
-            unsafe_allow_html=True
-        )
+    col_left, col_center, col_right = st.columns([1, 2, 1])
 
-        # Logo
+    with col_center:
+        # Logo centralizado
         if os.path.exists("villares.png"):
             logo = Image.open("villares.png")
-            st.image(logo, width=220)
+            col_logo1, col_logo2, col_logo3 = st.columns([1, 2, 1])
+            with col_logo2:
+                st.image(logo, width=360)
 
-        # Título
-        st.markdown(
-            "<h2 style='margin-top:10px;'>🔒 Login - Sistema Web Villares Imóveis</h2>",
-            unsafe_allow_html=True
-        )
-        st.markdown("<hr>", unsafe_allow_html=True)
+        # Título centralizado
+        st.markdown("<h3 style='text-align: center;'>Sistema Villares Imóveis</h3>", unsafe_allow_html=True)
+        # Removido <hr> para evitar linha no meio da tela
 
-        # Campos de login
-        user = st.text_input("Usuário")
-        pwd = st.text_input("Senha", type="password")
+        # Campo de usuário centralizado
+        col_user1, col_user2, col_user3 = st.columns([1, 2, 1])
+        with col_user2:
+            user = st.text_input("Usuário", placeholder="Digite seu usuário", key="login_user")
 
-        # Botão centralizado e estilizado
-        st.markdown(
-            """
-            <style>
-            div.stButton > button {
-                background-color: #4CAF50;
-                color: white;
-                padding: 10px 25px;
-                border-radius: 8px;
-                font-size: 16px;
-                display: block;
-                margin: 15px auto;
-            }
-            div.stButton > button:hover {
-                background-color: #45a049;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
+        # Campo de senha centralizado
+        col_pwd1, col_pwd2, col_pwd3 = st.columns([1, 2, 1])
+        with col_pwd2:
+            pwd = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_pwd")
 
-        if st.button("Entrar"):
-            if user in usuarios and usuarios[user] == pwd:
-                st.session_state.logged_in = True
-                st.session_state.usuario = user
-                st.success(f"Bem-vindo, {user}!")
-                st.rerun()
-            else:
-                st.error("Usuário ou senha incorretos")
+        # Botão centralizado com CSS para tamanho e alinhamento perfeitos
+        col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+        with col_btn2:
+            st.markdown("""
+                <style>
+                    div.stButton > button {
+                        background-color: #4CAF50;
+                        color: white;
+                        padding: 8px 20px;
+                        border: none;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-weight: bold;
+                        display: block;
+                        margin: 10px auto;  /* centraliza horizontalmente */
+                        width: 40px auto;        /* largura ajustável ao conteúdo */
+                        min-width: 120px;
+                    }
+                    div.stButton > button:hover {
+                        background-color: #45a049;
+                    }
+                </style>
+            """, unsafe_allow_html=True)
 
-        # Fechar o card
-        st.markdown("</div>", unsafe_allow_html=True)
+            if st.button("Entrar"):
+                if user in usuarios and usuarios[user] == pwd:
+                    st.session_state.logged_in = True
+                    st.session_state.usuario = user
+                    st.success(f"Bem-vindo, {user}!")
+                    st.rerun()
+                else:
+                    st.error("Usuário ou senha incorretos")
 
 # ----------------- Função para mudar de página -----------------
 def mudar_pagina(pagina):
@@ -113,7 +102,7 @@ def dashboard():
         with col_logo:
             if os.path.exists("villares.png"):
                 logo = Image.open("villares.png")
-                st.image(logo, width=200)  
+                st.image(logo, width=200)
         with col_title:
             st.markdown("<h1 style='margin-top:30px'>📂 Central de Geradores de Documentos</h1>", unsafe_allow_html=True)
             st.markdown("### Villares Imobiliária", unsafe_allow_html=True)
@@ -121,28 +110,54 @@ def dashboard():
         st.markdown("---")
         st.markdown("### Escolha o gerador que deseja usar:")
 
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            if st.button("📄\nGerar Ficha Cadastral", key="ficha_cadastral"):
-                mudar_pagina("ficha_cadastral")
-            if st.button("📝\nGerar Contrato Administrativo", key="contrato_admin"):
-                mudar_pagina("contrato_administrativo")
-        with col2:
-            if st.button("📃\nGerar Contrato", key="contrato"):
-                mudar_pagina("contrato")
-            if st.button("🏠\nGerar Ficha de Captação", key="ficha_captacao"):
-                mudar_pagina("ficha_captacao")
-        with col3:
-            if st.button("📋\nGerar Termo de Vistoria", key="termo_vistoria"):
-                mudar_pagina("termo_vistoria")
+        # Card estilo vidro fosco
+        card_style = """
+        <div style="
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            text-align: center;
+            margin-bottom: 20px;
+        ">
+        """
 
-        # Planilhas lado a lado
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.markdown(card_style, unsafe_allow_html=True)
+            if st.button("📄 Gerar Ficha Cadastral", key="ficha_cadastral"):
+                mudar_pagina("ficha_cadastral")
+            if st.button("📝 Gerar Contrato Administrativo", key="contrato_admin"):
+                mudar_pagina("contrato_administrativo")
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        with col2:
+            st.markdown(card_style, unsafe_allow_html=True)
+            if st.button("📃 Gerar Contrato", key="contrato"):
+                mudar_pagina("contrato")
+            if st.button("🏠 Gerar Ficha de Captação", key="ficha_captacao"):
+                mudar_pagina("ficha_captacao")
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        with col3:
+            st.markdown(card_style, unsafe_allow_html=True)
+            if st.button("📋 Gerar Termo de Vistoria", key="termo_vistoria"):
+                mudar_pagina("termo_vistoria")
+            if st.button("📋 Recibo", key="recibo"):
+                mudar_pagina("recibo")
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        # Planilhas com estilo vidro
         st.markdown("---")
         col_a, col_b = st.columns(2)
         with col_a:
+            st.markdown(card_style, unsafe_allow_html=True)
             st.markdown(
                 """
-                <div style='text-align:center; margin-top:20px'>
+                <div style='text-align:center; margin-top:10px'>
                     <a href='https://docs.google.com/spreadsheets/d/1BPwecYI9zenjxQniEGgkh7CqBOSjOATi3R-2IRot4ow/edit?gid=890601984#gid=890601984' target='_blank'
                        style='background-color:#4CAF50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-size:16px;'>
                        Acessar Planilha de carta de imóveis
@@ -151,10 +166,13 @@ def dashboard():
                 """,
                 unsafe_allow_html=True
             )
+            st.markdown("</div>", unsafe_allow_html=True)
+
         with col_b:
+            st.markdown(card_style, unsafe_allow_html=True)
             st.markdown(
                 """
-                <div style='text-align:center; margin-top:20px'>
+                <div style='text-align:center; margin-top:10px'>
                     <a href='https://docs.google.com/spreadsheets/d/1T4FRm4KUVQjD4aSg3Hn_FI6E0h_m8KbfaPGnlviXydI/edit?usp=sharing' target='_blank'
                        style='background-color:#4CAF50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-size:16px;'>
                        Acessar Planilha Gestão Orçamentária - Pagar e Receber
@@ -163,6 +181,7 @@ def dashboard():
                 """,
                 unsafe_allow_html=True
             )
+            st.markdown("</div>", unsafe_allow_html=True)
 
     # Chamando scripts
     else:
@@ -183,6 +202,9 @@ def dashboard():
         elif st.session_state.pagina == "termo_vistoria":
             import termo_vistoria
             termo_vistoria.app()
+        elif st.session_state.pagina == "recibo":
+            import recibo
+            recibo.app()
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:
