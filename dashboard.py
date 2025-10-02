@@ -30,33 +30,28 @@ def login():
     col_left, col_center, col_right = st.columns([1, 2, 1])
 
     with col_center:
-        # Logo centralizado
+        # Logo centralizado com tamanho reduzido
         if os.path.exists("villares.png"):
             logo = Image.open("villares.png")
-            col_logo1, col_logo2, col_logo3 = st.columns([1, 2, 1])
-            with col_logo2:
-                st.image(logo, width=360)
+            st.image(logo, width=280, use_container_width=True)  # Reduzido de 360 para 280
 
-        # Título centralizado
-        st.markdown("<h3 style='text-align: center;'>Sistema Villares Imóveis</h3>", unsafe_allow_html=True)
+        # Título centralizado com menor margem
+        st.markdown("<h3 style='text-align: center; margin: 15px 0;'>Sistema Villares Imóveis</h3>", unsafe_allow_html=True)
         
-
-        # Campo de usuário centralizado
-        col_user1, col_user2, col_user3 = st.columns([1, 2, 1])
-        with col_user2:
-            user = st.text_input("Usuário", placeholder="Digite seu usuário", key="login_user")
-
-        # Campo de senha centralizado
-        col_pwd1, col_pwd2, col_pwd3 = st.columns([1, 2, 1])
-        with col_pwd2:
-            pwd = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_pwd")
-
-        # Botão centralizado com CSS para tamanho e alinhamento perfeitos
-        col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
-        with col_btn2:
+        # Campos centralizados
+        user = st.text_input("Usuário", placeholder="Digite seu usuário", key="login_user")
+        pwd = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_pwd")
+        
+        # Espaçamento reduzido
+        st.markdown("<div style='margin: 15px 0;'></div>", unsafe_allow_html=True)
+        
+        # Botão centralizado
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            # CSS para botão mais compacto
             st.markdown("""
                 <style>
-                    div.stButton > button {
+                    div[data-testid="stButton"] > button {
                         background-color: #4CAF50;
                         color: white;
                         padding: 8px 20px;
@@ -64,18 +59,15 @@ def login():
                         border-radius: 6px;
                         font-size: 14px;
                         font-weight: bold;
-                        display: block;
-                        margin: 10px auto;  /* centraliza horizontalmente */
-                        width: 40px auto;        /* largura ajustável ao conteúdo */
-                        min-width: 120px;
+                        width: 100%;
                     }
-                    div.stButton > button:hover {
+                    div[data-testid="stButton"] > button:hover {
                         background-color: #45a049;
                     }
                 </style>
             """, unsafe_allow_html=True)
-
-            if st.button("Entrar"):
+            
+            if st.button("Entrar", use_container_width=True, key="login_button"):
                 if user in usuarios and usuarios[user] == pwd:
                     st.session_state.logged_in = True
                     st.session_state.usuario = user
@@ -127,7 +119,7 @@ def dashboard():
         with col3:
             if st.button("📋 Gerar Termo de Vistoria", key="termo_vistoria"):
                 mudar_pagina("termo_vistoria")
-            if st.button("📋 Recibo", key="recibo"):
+            if st.button("📄 Gerar Recibo", key="recibo"):
                 mudar_pagina("recibo")
 
         # Planilhas, também sem fundo branco
