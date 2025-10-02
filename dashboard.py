@@ -150,34 +150,37 @@ def dashboard():
             if st.button("📄 Gerar Recibo", key="recibo"):
                 mudar_pagina("recibo")
 
-        # Planilhas, também sem fundo branco
+        # Planilhas - botões um abaixo do outro
         st.markdown("---")
-        col_a, col_b = st.columns(2)
-        with col_a:
-            st.markdown(
-                """
-                <div style='text-align:center; margin-top:10px'>
-                    <a href='https://docs.google.com/spreadsheets/d/1BPwecYI9zenjxQniEGgkh7CqBOSjOATi3R-2IRot4ow/edit?gid=890601984#gid=890601984' target='_blank'
-                       style='background-color:#4CAF50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-size:16px;'>
-                       Acessar Planilha de carta de imóveis
-                    </a>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+        
+        # Primeiro botão
+        st.markdown(
+            """
+            <div style='text-align:center; margin:20px 0;'>
+                <a href='https://docs.google.com/spreadsheets/d/1BPwecYI9zenjxQniEGgkh7CqBOSjOATi3R-2IRot4ow/edit?gid=890601984#gid=890601984' target='_blank'
+                   style='background-color:#4CAF50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-size:16px;'>
+                   Acessar Planilha de carta de imóveis
+                </a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-        with col_b:
-            st.markdown(
-                """
-                <div style='text-align:center; margin-top:10px'>
-                    <a href='https://docs.google.com/spreadsheets/d/1T4FRm4KUVQjD4aSg3Hn_FI6E0h_m8KbfaPGnlviXydI/edit?usp=sharing' target='_blank'
-                       style='background-color:#4CAF50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-size:16px;'>
-                       Acessar Planilha Gestão Orçamentária - Pagar e Receber
-                    </a>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+        # Espaço entre os botões
+        st.markdown("<div style='margin:15px 0;'></div>", unsafe_allow_html=True)
+
+        # Segundo botão
+        st.markdown(
+            """
+            <div style='text-align:center; margin:20px 0;'>
+                <a href='https://docs.google.com/spreadsheets/d/1T4FRm4KUVQjD4aSg3Hn_FI6E0h_m8KbfaPGnlviXydI/edit?usp=sharing' target='_blank'
+                   style='background-color:#4CAF50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-size:16px;'>
+                   Acessar Planilha Gestão Orçamentária - Pagar e Receber
+                </a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     # Chamando scripts
     else:
@@ -207,4 +210,3 @@ if not st.session_state.logged_in:
     login()
 else:
     dashboard()
-
