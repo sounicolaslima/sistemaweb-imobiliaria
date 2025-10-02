@@ -27,46 +27,74 @@ usuarios = carregar_usuarios()
 
 # ----------------- Função de Login -----------------
 def login():
-    col_left, col_center, col_right = st.columns([1, 2, 1])
+    col_left, col_center, col_right = st.columns([1, 3, 1])
 
     with col_center:
-        # Logo centralizado com tamanho reduzido
+        # Logo centralizada com colunas
         if os.path.exists("villares.png"):
             logo = Image.open("villares.png")
-            st.image(logo, width=280, use_container_width=True)  # Reduzido de 360 para 280
+            col_img1, col_img2, col_img3 = st.columns([1, 2, 1])
+            with col_img2:
+                # CSS que funciona em todos os navegadores
+                st.markdown("""
+                    <style>
+                    .logo-container {
+                        display: flex;
+                        justify-content: center;
+                    }
+                    .logo-container img {
+                        transition: filter 0.3s ease;
+                    }
+                    /* Força tema claro para a logo */
+                    .logo-container img {
+                        filter: none !important;
+                    }
+                    </style>
+                """, unsafe_allow_html=True)
+                st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+                st.image(logo, width=480)
+                st.markdown('</div>', unsafe_allow_html=True)
 
-        # Título centralizado com menor margem
-        st.markdown("<h3 style='text-align: center; margin: 15px 0;'>Sistema Villares Imóveis</h3>", unsafe_allow_html=True)
+        # Título compacto
+        st.markdown("<h4 style='text-align: center; margin: 5px 0 10px 0; font-size: 28px;'>Sistema Villares Imóveis</h4>", unsafe_allow_html=True)
         
-        # Campos centralizados
-        user = st.text_input("Usuário", placeholder="Digite seu usuário", key="login_user")
-        pwd = st.text_input("Senha", type="password", placeholder="Digite sua senha", key="login_pwd")
+        # CSS para o botão verde
+        st.markdown("""
+            <style>
+                div[data-testid="stButton"] > button {
+                    background-color: #4CAF50 !important;
+                    color: white !important;
+                    padding: 8px 20px !important;
+                    border: none !important;
+                    border-radius: 6px !important;
+                    font-size: 14px !important;
+                    font-weight: bold !important;
+                    display: block !important;
+                    margin: 10px auto !important;
+                    width: 40px auto !important;
+                    min-width: 120px !important;
+                }
+                div[data-testid="stButton"] > button:hover {
+                    background-color: #45a049 !important;
+                }
+            </style>
+        """, unsafe_allow_html=True)
         
-        # Espaçamento reduzido
-        st.markdown("<div style='margin: 15px 0;'></div>", unsafe_allow_html=True)
+        # Campos em colunas estreitas
+        col_user1, col_user2, col_user3 = st.columns([1, 2, 1])
+        with col_user2:
+            user = st.text_input("", placeholder="👤 Usuário", key="login_user", label_visibility="collapsed")
         
-        # Botão centralizado
-        col1, col2, col3 = st.columns([1, 1, 1])
-        with col2:
-            # CSS para botão mais compacto
-            st.markdown("""
-                <style>
-                    div[data-testid="stButton"] > button {
-                        background-color: #4CAF50;
-                        color: white;
-                        padding: 8px 20px;
-                        border: none;
-                        border-radius: 6px;
-                        font-size: 14px;
-                        font-weight: bold;
-                        width: 100%;
-                    }
-                    div[data-testid="stButton"] > button:hover {
-                        background-color: #45a049;
-                    }
-                </style>
-            """, unsafe_allow_html=True)
-            
+        col_pwd1, col_pwd2, col_pwd3 = st.columns([1, 2, 1])
+        with col_pwd2:
+            pwd = st.text_input("", type="password", placeholder="🔒 Senha", key="login_pwd", label_visibility="collapsed")
+        
+        # Espaçamento
+        st.markdown("<div style='margin: 12px 0;'></div>", unsafe_allow_html=True)
+        
+        # Botão em coluna estreita
+        col_btn1, col_btn2, col_btn3 = st.columns([1, 1, 1])
+        with col_btn2:
             if st.button("Entrar", use_container_width=True, key="login_button"):
                 if user in usuarios and usuarios[user] == pwd:
                     st.session_state.logged_in = True
