@@ -30,81 +30,168 @@ def app():
             json.dump(dados, f, ensure_ascii=False, indent=4)
 
     dados_todos = carregar_todos()
-    st.title("FICHA CADASTRAL")
+    
+    # ----------------- Configuração da Página -----------------
+    st.set_page_config(page_title="Ficha Cadastral", layout="centered")
+    
+    # CSS para centralizar e estilizar
+    st.markdown("""
+        <style>
+            .main-container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .section-header {
+                text-align: center;
+                margin: 25px 0 15px 0;
+                padding: 12px;
+                background-color: #f0f2f6;
+                border-radius: 8px;
+                border-left: 4px solid #4CAF50;
+            }
+            .stButton button {
+                width: 100%;
+            }
+            .warning-box {
+                background-color: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+            }
+            .subheader {
+                margin: 20px 0 10px 0;
+                padding: 10px;
+                background-color: #f8f9fa;
+                border-radius: 5px;
+                border-left: 3px solid #2196F3;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
+    
+    st.title("📋 FICHA CADASTRAL")
 
     # ----------------- Identificação Locatário -----------------
-    st.subheader("Identificação do Locatário")
-    cpf = st.text_input("CPF do Locatário")
-    if st.button("Carregar por CPF"):
-        if cpf in dados_todos:
-            dados = dados_todos[cpf]
-            st.session_state.update(dados)
-            st.success(f"Dados carregados para CPF {cpf}")
-        else:
-            st.info(f"Nenhum dado encontrado para CPF {cpf}")
+    st.markdown('<div class="section-header"><h3>BUSCAR DADOS EXISTENTES</h3></div>', unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([2, 1, 1])
+    with col1:
+        cpf = st.text_input("CPF do Locatário", placeholder="000.000.000-00")
+    with col2:
+        if st.button("🔍 Carregar", use_container_width=True):
+            if cpf in dados_todos:
+                dados = dados_todos[cpf]
+                st.session_state.update(dados)
+                st.success(f"Dados carregados para CPF {cpf}")
+            else:
+                st.info(f"Nenhum dado encontrado para CPF {cpf}")
 
     # ----------------- Dados do Locatário -----------------
-    st.subheader("Dados do Locatário")
-    nomeLocatario = st.text_input("Nome")
-    RG = st.text_input("RG")
-    endereco = st.text_input("Endereço")
-    valorLocacao = st.text_input("Valor Locação")
-    dataEntrada = st.text_input("Data Entrada")
-    dataVenc = st.text_input("Vencimento")
-    celular = st.text_input("Celular")
-    email = st.text_input("E-mail")
+    st.markdown('<div class="section-header"><h3>DADOS DO LOCATÁRIO</h3></div>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        nomeLocatario = st.text_input("Nome", value=st.session_state.get("nomeLocatario", ""), placeholder="Nome completo do locatário")
+        RG = st.text_input("RG", value=st.session_state.get("RG", ""), placeholder="00.000.000-0")
+        endereco = st.text_input("Endereço", value=st.session_state.get("endereco", ""), placeholder="Endereço completo")
+        valorLocacao = st.text_input("Valor Locação", value=st.session_state.get("valorLocacao", ""), placeholder="R$ 0,00")
+    
+    with col2:
+        dataEntrada = st.text_input("Data Entrada", value=st.session_state.get("dataEntrada", ""), placeholder="DD/MM/AAAA")
+        dataVenc = st.text_input("Vencimento", value=st.session_state.get("dataVenc", ""), placeholder="DD/MM")
+        celular = st.text_input("Celular", value=st.session_state.get("celular", ""), placeholder="(00) 00000-0000")
+        email = st.text_input("E-mail", value=st.session_state.get("email", ""), placeholder="email@exemplo.com")
 
     # ----------------- Fiadores -----------------
-    st.subheader("Fiadores")
+    st.markdown('<div class="section-header"><h3>FIADORES</h3></div>', unsafe_allow_html=True)
+    
     if "fiadores" not in st.session_state:
         st.session_state.fiadores = []
-    if st.button("Adicionar Fiador"):
-        st.session_state.fiadores.append({
-            "nome": "", "rg": "", "cpf": "", "end": "", "cel": "", "email": ""
-        })
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("➕ Adicionar Fiador", use_container_width=True):
+            st.session_state.fiadores.append({
+                "nome": "", "rg": "", "cpf": "", "end": "", "cel": "", "email": ""
+            })
+            st.rerun()
+
     for idx, f in enumerate(st.session_state.fiadores):
         st.markdown(f"**Fiador {idx+1}**")
-        f["nome"] = st.text_input(f"Nome Fiador {idx+1}", f.get("nome", ""), key=f"nome{idx}")
-        f["rg"] = st.text_input(f"RG Fiador {idx+1}", f.get("rg", ""), key=f"rg{idx}")
-        f["cpf"] = st.text_input(f"CPF Fiador {idx+1}", f.get("cpf", ""), key=f"cpf{idx}")
-        f["end"] = st.text_input(f"Endereço Fiador {idx+1}", f.get("end", ""), key=f"end{idx}")
-        f["cel"] = st.text_input(f"Celular Fiador {idx+1}", f.get("cel", ""), key=f"cel{idx}")
-        f["email"] = st.text_input(f"E-mail Fiador {idx+1}", f.get("email", ""), key=f"email{idx}")
+        col1, col2 = st.columns(2)
+        with col1:
+            f["nome"] = st.text_input(f"Nome Fiador {idx+1}", f.get("nome", ""), key=f"nome{idx}", placeholder="Nome completo")
+            f["rg"] = st.text_input(f"RG Fiador {idx+1}", f.get("rg", ""), key=f"rg{idx}", placeholder="00.000.000-0")
+            f["cpf"] = st.text_input(f"CPF Fiador {idx+1}", f.get("cpf", ""), key=f"cpf{idx}", placeholder="000.000.000-00")
+        with col2:
+            f["end"] = st.text_input(f"Endereço Fiador {idx+1}", f.get("end", ""), key=f"end{idx}", placeholder="Endereço completo")
+            f["cel"] = st.text_input(f"Celular Fiador {idx+1}", f.get("cel", ""), key=f"cel{idx}", placeholder="(00) 00000-0000")
+            f["email"] = st.text_input(f"E-mail Fiador {idx+1}", f.get("email", ""), key=f"email{idx}", placeholder="email@exemplo.com")
 
     # ----------------- Proprietário -----------------
-    st.subheader("Dados do Proprietário")
-    nomeProprietario = st.text_input("Nome Proprietário")
-    RGProprietario = st.text_input("RG Proprietário")
-    CPFProprietario = st.text_input("CPF Proprietário")
-    enderecoProprietario = st.text_input("Endereço Proprietário")
-    celProprietario = st.text_input("Celular Proprietário")
-    emailProprietario = st.text_input("E-mail Proprietário")
+    st.markdown('<div class="section-header"><h3>DADOS DO PROPRIETÁRIO</h3></div>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        nomeProprietario = st.text_input("Nome Proprietário", value=st.session_state.get("nomeProprietario", ""), placeholder="Nome completo do proprietário")
+        RGProprietario = st.text_input("RG Proprietário", value=st.session_state.get("RGProprietario", ""), placeholder="00000000")
+        CPFProprietario = st.text_input("CPF Proprietário", value=st.session_state.get("CPFProprietario", ""), placeholder="000.000.000-00")
+    
+    with col2:
+        enderecoProprietario = st.text_input("Endereço Proprietário", value=st.session_state.get("enderecoProprietario", ""), placeholder="Endereço completo")
+        celProprietario = st.text_input("Celular Proprietário", value=st.session_state.get("celProprietario", ""), placeholder="(00) 00000-0000")
+        emailProprietario = st.text_input("E-mail Proprietário", value=st.session_state.get("emailProprietario", ""), placeholder="email@exemplo.com")
 
     # ----------------- Dados Bancários -----------------
-    st.subheader("Dados Bancários")
-    banco = st.text_input("Banco")
-    agencia = st.text_input("Agência")
-    conta = st.text_input("Conta Corrente")
-    declaracaoImposto = st.text_input("Declaração IR")
+    st.markdown('<div class="section-header"><h3>DADOS BANCÁRIOS</h3></div>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        banco = st.text_input("Banco", value=st.session_state.get("banco", ""), placeholder="Nome do banco")
+        agencia = st.text_input("Agência", value=st.session_state.get("agencia", ""), placeholder="Número da agência")
+    
+    with col2:
+        conta = st.text_input("Conta Corrente", value=st.session_state.get("conta", ""), placeholder="Número da conta")
+        declaracaoImposto = st.text_input("Declaração IR", value=st.session_state.get("declaracaoImposto", ""), placeholder="Declaração de imposto de renda")
 
     # ----------------- Dados do Imóvel -----------------
-    st.subheader("Dados do Imóvel")
-    enderecoImovel = st.text_input("Endereço do Imóvel")
+    st.markdown('<div class="section-header"><h3>DADOS DO IMÓVEL</h3></div>', unsafe_allow_html=True)
+    
+    enderecoImovel = st.text_input("Endereço do Imóvel", value=st.session_state.get("enderecoImovel", ""), placeholder="Endereço completo do imóvel")
 
     # ----------------- Características -----------------
-    st.subheader("Características do Imóvel")
+    st.markdown('<div class="section-header"><h3>CARACTERÍSTICAS DO IMÓVEL</h3></div>', unsafe_allow_html=True)
+    
     if "caracteristicas" not in st.session_state:
         st.session_state.caracteristicas = []
-    if st.button("Adicionar Característica"):
-        st.session_state.caracteristicas.append("")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("➕ Adicionar Característica", use_container_width=True):
+            st.session_state.caracteristicas.append("")
+            st.rerun()
+
     for i, carac in enumerate(st.session_state.caracteristicas):
-        st.session_state.caracteristicas[i] = st.text_input(f"Característica {i+1}", carac, key=f"carac{i}")
+        st.session_state.caracteristicas[i] = st.text_input(
+            f"Característica {i+1}", 
+            carac, 
+            key=f"carac{i}",
+            placeholder="Ex: 3 quartos, 2 banheiros, garagem, etc."
+        )
 
     # ----------------- Serviços e Tributos -----------------
-    st.subheader("Serviços e Tributos")
-    CemigInstal = st.text_input("CEMIG Instalação")
-    matriculaCopasa = st.text_input("COPASA Matrícula")
-    IPTU = st.text_input("IPTU")
+    st.markdown('<div class="section-header"><h3>SERVIÇOS E TRIBUTOS</h3></div>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        CemigInstal = st.text_input("CEMIG Instalação", value=st.session_state.get("CemigInstal", ""), placeholder="Número da instalação")
+        matriculaCopasa = st.text_input("COPASA Matrícula", value=st.session_state.get("matriculaCopasa", ""), placeholder="Número da matrícula")
+    
+    with col2:
+        IPTU = st.text_input("IPTU", value=st.session_state.get("IPTU", ""), placeholder="Valor do IPTU")
 
     # ----------------- Função gerar ficha -----------------
     def gerar_ficha_streamlit():
@@ -174,18 +261,27 @@ def app():
         return buffer
 
     # ----------------- Botão gerar/download -----------------
-    if st.button("Gerar Ficha e Baixar"):
-        arquivo = gerar_ficha_streamlit()
-        if arquivo:
-            nome_locatario_clean = nomeLocatario.replace(" ", "_") if nomeLocatario else "SemNome"
-            data_contrato_clean = dataEntrada.replace("/", "-") if dataEntrada else "SemData"
-            nome_arquivo = f"Ficha_{nome_locatario_clean}_{data_contrato_clean}.docx"
+    st.markdown("---")
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("📄 GERAR FICHA CADASTRAL", use_container_width=True, type="primary"):
+            arquivo = gerar_ficha_streamlit()
+            if arquivo:
+                nome_locatario_clean = nomeLocatario.replace(" ", "_") if nomeLocatario else "SemNome"
+                data_contrato_clean = dataEntrada.replace("/", "-") if dataEntrada else "SemData"
+                nome_arquivo = f"Ficha_{nome_locatario_clean}_{data_contrato_clean}.docx"
 
-            st.download_button(
-            label="📥 Clique aqui para baixar a ficha",
-            data=arquivo,
-            file_name=nome_arquivo,
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            )
-            st.success("Ficha gerada com sucesso!")
-
+                st.success("✅ Ficha gerada com sucesso!")
+                st.download_button(
+                    label="📥 BAIXAR FICHA CADASTRAL",
+                    data=arquivo,
+                    file_name=nome_arquivo,
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    use_container_width=True
+                )
+    
+    st.markdown('</div>', unsafe_allow_html=True) 
+    
+if __name__ == "__main__":
+    app()

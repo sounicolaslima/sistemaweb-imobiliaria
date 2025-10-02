@@ -1,0 +1,74 @@
+{
+    "120.735.576-35": {
+        "CPFLocatario": "120.735.576-35",
+        "nomeLocatario": "etwt",
+        "RG": "0000000000",
+        "endereco": "fsefef",
+        "celular": "(35)0000000",
+        "email": "",
+        "enderecoImovel": "fwqefwqe",
+        "dataContrato": "10/09/21",
+        "dataVistoria": "11/12/21",
+        "nomeVistoriador": "fefwef",
+        "dia": "04",
+        "mes": "03",
+        "ano": "2004",
+        "TESTEMUNHA1": "",
+        "CPFTestemunha1": "",
+        "TESTEMUNHA2": "",
+        "CPFTestemunha2": "",
+        "fiadores": [
+            {
+                "nome": "",
+                "cpf": "",
+                "rg": "",
+                "endereco": "",
+                "telefone": ""
+            },
+            {
+                "nome": "w35w5w35",
+                "cpf": "",
+                "rg": "",
+                "endereco": "",
+                "telefone": ""
+            }
+        ],
+        "comodos": [
+            {
+                "nome": "Sala",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": ""
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": ""
+                    },
+                    {
+                        "nome": "Tomada",
+                        "estado": "Bom",
+                        "descricao": ""
+                    }
+                ]
+            },
+            {
+                "nome": "Cômodo 2",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": ""
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": ""
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -2,9 +2,11 @@ import streamlit as st
 from PIL import Image
 import os
 import json
+import requests
+from datetime import datetime
 
 # ----------------- Configuração da página -----------------
-st.set_page_config(page_title="Dashboard Villares", layout="wide")
+st.set_page_config(page_title="Dashboard Villares", layout="wide", initial_sidebar_state="collapsed")
 
 # ----------------- Estado inicial -----------------
 if "logged_in" not in st.session_state:
@@ -13,6 +15,8 @@ if "usuario" not in st.session_state:
     st.session_state.usuario = None
 if "pagina" not in st.session_state:
     st.session_state.pagina = "inicial"
+if "frase_do_dia" not in st.session_state:
+    st.session_state.frase_do_dia = ""
 
 # ----------------- Carregar usuários do JSON -----------------
 ARQUIVO_USUARIOS = "usuarios.json"
@@ -24,6 +28,30 @@ def carregar_usuarios():
     return {}
 
 usuarios = carregar_usuarios()
+
+# ----------------- Função para buscar frase do dia -----------------
+def buscar_frase_do_dia():
+    try:
+        # API que retorna frases em português
+        response = requests.get("https://api.quotable.io/random", timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            if data and "content" in data:
+                frase = data["content"]
+                autor = data.get("author", "Desconhecido")
+                return f'"{frase}" - {autor}'
+    except:
+        pass
+    
+    # Fallback simples caso a API não funcione
+    frases_fallback = [
+        "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
+        "Acredite que você pode e você já está no meio do caminho.",
+        "Cada novo dia é uma nova oportunidade para mudar sua vida."
+    ]
+    
+    dia = datetime.now().day
+    return frases_fallback[dia % len(frases_fallback)]
 
 # ----------------- Função de Login -----------------
 def login():
@@ -52,7 +80,7 @@ def login():
                     </style>
                 """, unsafe_allow_html=True)
                 st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-                st.image(logo, width=480)
+                st.image(logo, width=380)
                 st.markdown('</div>', unsafe_allow_html=True)
 
         # Título compacto
@@ -103,88 +131,252 @@ def login():
                     st.rerun()
                 else:
                     st.error("Usuário ou senha incorretos")
-
 # ----------------- Função para mudar de página -----------------
 def mudar_pagina(pagina):
     st.session_state.pagina = pagina
 
 # ----------------- Dashboard -----------------
 def dashboard():
-    # Sidebar com usuário logado
-    st.sidebar.markdown(f"👤 Logado como: **{st.session_state.usuario}**")
-    if st.sidebar.button("Sair"):
-        st.session_state.logged_in = False
-        st.session_state.usuario = None
-        st.rerun()
+    # CSS para o dashboard
+    st.markdown("""
+        <style>
+            .main-dashboard-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .section-header {
+                text-align: center;
+                margin: 30px 0 20px 0;
+                padding: 15px;
+                background-color: #f0f2f6;
+                border-radius: 10px;
+                border-left: 5px solid #4CAF50;
+            }
+            .card-button {
+                background-color: white;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                padding: 25px 15px;
+                text-align: center;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .card-button:hover {
+                border-color: #4CAF50;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            }
+            .card-icon {
+                font-size: 32px;
+                margin-bottom: 10px;
+            }
+            .card-title {
+                font-weight: 600;
+                font-size: 14px;
+                color: #333;
+            }
+            .planilha-button {
+                background-color: white;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                padding: 25px 15px;
+                text-align: center;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                color: #333 !important;
+            }
+            .planilha-button:hover {
+                border-color: #4CAF50;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+                text-decoration: none;
+                color: #333 !important;
+            }
+            .planilha-title {
+                font-weight: 600;
+                font-size: 16px !important;
+                color: #333;
+                margin-bottom: 8px;
+            }
+            .planilha-desc {
+                font-size: 13px !important;
+                color: #666;
+                line-height: 1.3;
+            }
+            .user-info {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                border-left: 4px solid #4CAF50;
+                margin-bottom: 15px;
+            }
+            .frase-container {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                margin: 15px 0;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+            .frase-titulo {
+                font-size: 14px;
+                font-weight: bold;
+                margin-bottom: 8px;
+                opacity: 0.9;
+            }
+            .frase-texto {
+                font-size: 13px;
+                font-style: italic;
+                line-height: 1.4;
+                margin: 0;
+            }
+            .data-atual {
+                font-size: 12px;
+                opacity: 0.8;
+                margin-top: 8px;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    # Sidebar com usuário logado e frase do dia
+    with st.sidebar:
+        # Informações do usuário
+        st.markdown('<div class="user-info">', unsafe_allow_html=True)
+        st.markdown(f"👤 **Usuário:** {st.session_state.usuario}")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Frase do dia
+        if st.session_state.frase_do_dia:
+            st.markdown('<div class="frase-container">', unsafe_allow_html=True)
+            st.markdown('<div class="frase-titulo">💫 FRASE DO DIA</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="frase-texto">{st.session_state.frase_do_dia}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="data-atual">{datetime.now().strftime("%d/%m/%Y")}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botão para atualizar frase
+        if st.button("🔄 Nova Frase", use_container_width=True):
+            st.session_state.frase_do_dia = buscar_frase_do_dia()
+            st.rerun()
+        
+        # Botão sair
+        if st.button("🚪 Sair do Sistema", use_container_width=True):
+            st.session_state.logged_in = False
+            st.session_state.usuario = None
+            st.session_state.frase_do_dia = ""
+            st.rerun()
+        
+        st.markdown("---")
+        st.markdown("### 📊 Navegação")
+        if st.button("🏠 Página Inicial", use_container_width=True):
+            mudar_pagina("inicial")
 
     if st.session_state.pagina == "inicial":
-        col_logo, col_title = st.columns([1,4])
+        st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
+        
+        # Cabeçalho com logo e título
+        col_logo, col_title = st.columns([1, 3])
         with col_logo:
             if os.path.exists("villares.png"):
                 logo = Image.open("villares.png")
-                st.image(logo, width=200)
+                st.image(logo, width=300)
         with col_title:
-            st.markdown("<h1 style='margin-top:30px'>📂 Central de Geradores de Documentos</h1>", unsafe_allow_html=True)
+            st.markdown("<h1 style='margin-top:20px; color:#333;'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
             st.markdown("### Villares Imobiliária", unsafe_allow_html=True)
 
         st.markdown("---")
-        st.markdown("### Escolha o gerador que deseja usar:")
-
+        
+        # Seção de Geradores de Documentos
+        st.markdown('<div class="section-header"><h2>📄 GERADORES DE DOCUMENTOS</h2></div>', unsafe_allow_html=True)
+        
+        # Grid de botões
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            if st.button("📄 Gerar Ficha Cadastral", key="ficha_cadastral"):
+            if st.button("**📄 FICHA CADASTRAL**\n\nCadastro completo de locatários", use_container_width=True, key="ficha_cadastral"):
                 mudar_pagina("ficha_cadastral")
-            if st.button("📝 Gerar Contrato Administrativo", key="contrato_admin"):
+            
+            if st.button("**📝 CONTRATO ADMINISTRATIVO**\n\nAdministração de imóveis", use_container_width=True, key="contrato_admin"):
                 mudar_pagina("contrato_administrativo")
 
         with col2:
-            if st.button("📃 Gerar Contrato", key="contrato"):
+            if st.button("**📃 CONTRATO DE LOCAÇÃO**\n\nContrato padrão de aluguel", use_container_width=True, key="contrato"):
                 mudar_pagina("contrato")
-            if st.button("🏠 Gerar Ficha de Captação", key="ficha_captacao"):
+            
+            if st.button("**🏠 FICHA DE CAPTAÇÃO**\n\nCadastro de imóveis", use_container_width=True, key="ficha_captacao"):
                 mudar_pagina("ficha_captacao")
 
         with col3:
-            if st.button("📋 Gerar Termo de Vistoria", key="termo_vistoria"):
+            if st.button("**📋 TERMO DE VISTORIA**\n\nVistoria de imóveis", use_container_width=True, key="termo_vistoria"):
                 mudar_pagina("termo_vistoria")
-            if st.button("📄 Gerar Recibo", key="recibo"):
+            
+            if st.button("**📄 RECIBO**\n\nEmitir recibos", use_container_width=True, key="recibo"):
                 mudar_pagina("recibo")
 
-        # Planilhas - botões um abaixo do outro
+        # Seção de Planilhas
         st.markdown("---")
+        st.markdown('<div class="section-header"><h2>📊 PLANILHAS EXTERNAS</h2></div>', unsafe_allow_html=True)
         
-        # Primeiro botão
-        st.markdown(
-            """
-            <div style='text-align:center; margin:20px 0;'>
-                <a href='https://docs.google.com/spreadsheets/d/1BPwecYI9zenjxQniEGgkh7CqBOSjOATi3R-2IRot4ow/edit?gid=890601984#gid=890601984' target='_blank'
-                   style='background-color:#4CAF50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-size:16px;'>
-                   Acessar Planilha de carta de imóveis
-                </a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-        # Espaço entre os botões
-        st.markdown("<div style='margin:15px 0;'></div>", unsafe_allow_html=True)
-
-        # Segundo botão
-        st.markdown(
-            """
-            <div style='text-align:center; margin:20px 0;'>
-                <a href='https://docs.google.com/spreadsheets/d/1T4FRm4KUVQjD4aSg3Hn_FI6E0h_m8KbfaPGnlviXydI/edit?usp=sharing' target='_blank'
-                   style='background-color:#4CAF50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; font-size:16px;'>
-                   Acessar Planilha Gestão Orçamentária - Pagar e Receber
-                </a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        col_plan1, col_plan2 = st.columns(2)
+        
+        with col_plan1:
+            st.markdown(
+                """
+                <div style='text-align:center;'>
+                    <a href='https://docs.google.com/spreadsheets/d/1BPwecYI9zenjxQniEGgkh7CqBOSjOATi3R-2IRot4ow/edit?gid=890601984#gid=890601984' 
+                       target='_blank' style='text-decoration: none;'>
+                       <div class='planilha-button'>
+                           <div class='planilha-title'>📋 PLANILHA DE CARTA DE IMÓVEIS</div>
+                           <div class='planilha-desc'>Acesso à planilha completa de imóveis disponíveis</div>
+                       </div>
+                    </a>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        
+        with col_plan2:
+            st.markdown(
+                """
+                <div style='text-align:center;'>
+                    <a href='https://docs.google.com/spreadsheets/d/1T4FRm4KUVQjD4aSg3Hn_FI6E0h_m8KbfaPGnlviXydI/edit?usp=sharing' 
+                       target='_blank' style='text-decoration: none;'>
+                       <div class='planilha-button'>
+                           <div class='planilha-title'>💰 GESTÃO ORÇAMENTÁRIA</div>
+                           <div class='planilha-desc'>Controle financeiro - contas a pagar e receber</div>
+                       </div>
+                    </a>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        
+        st.markdown('</div>', unsafe_allow_html=True)
 
     # Chamando scripts
     else:
-        st.button("⬅️ Voltar", on_click=lambda: mudar_pagina("inicial"))
+        st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
+        
+        col_back, col_title = st.columns([1, 4])
+        with col_back:
+            if st.button("⬅️ VOLTAR", use_container_width=True):
+                mudar_pagina("inicial")
+        with col_title:
+            st.markdown(f"<h2 style='color:#333;'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
+        
+        st.markdown("---")
 
         if st.session_state.pagina == "ficha_cadastral":
             import fichaCadastral
@@ -204,6 +396,8 @@ def dashboard():
         elif st.session_state.pagina == "recibo":
             import recibo
             recibo.app()
+        
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:
