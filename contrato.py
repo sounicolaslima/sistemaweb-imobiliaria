@@ -62,11 +62,11 @@ def gerar_contrato(dados):
                     rt.add(valor.strip()+"\n")
             fiadores_richtext.append(rt)
 
-        # Atualiza JSON
+        # Atualiza JSON (incluindo o novo campo mesDeDesocupacao)
         dados_todos[cpf] = {**dados, "fiadores": lista_fiadores_json}
         salvar_todos(dados_todos)
 
-        # Renderiza documento
+        # Renderiza documento (incluindo o novo campo)
         render_data = {**dados, "fiadores": fiadores_richtext}
         doc.render(render_data)
 
@@ -178,7 +178,7 @@ def app():
     st.subheader("Duração do Contrato")
     campos_duracao = [
         ("duracao","Duração"),("dataInicio","Data Início"),("dataTermino","Data Término"),
-        ("ValorLocacaoMensal","Valor Mensal"),("dataContrato","Data do Contrato")
+        ("ValorLocacaoMensal","Valor Mensal"), ("mesDeDesocupacao", "Mês de Desocupação"),("dataContrato","Data do Contrato")
     ]
     dados_ficha.update(criar_campos(campos_duracao, dados_ficha, prefix="duracao"))
 
