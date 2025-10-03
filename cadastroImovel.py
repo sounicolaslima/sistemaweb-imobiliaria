@@ -48,12 +48,8 @@ st.markdown("""
 # ----------------- Título principal -----------------
 st.markdown('<div class="main-header">🏠 CADASTRO DE IMÓVEL</div>', unsafe_allow_html=True)
 
-# ----------------- Inicialização do estado da sessão -----------------
-if 'dados_formulario' not in st.session_state:
-    st.session_state.dados_formulario = {}
-
 # ----------------- Funções auxiliares -----------------
-def criar_colunas(num_cols, padding_top=0):
+def criar_colunas(num_cols):
     return st.columns(num_cols)
 
 # ----------------- Formulário principal -----------------
@@ -70,7 +66,7 @@ with st.form("formulario_imovel"):
         aluguel = st.checkbox("Aluguel", value=True)
         venda = st.checkbox("Venda")
     with col3:
-        st.write("&nbsp;")  # Espaçamento
+        st.write("&nbsp;")
 
     # Seção: Tipo de Imóvel
     st.markdown('<div class="section-header">🏡 Tipo de Imóvel</div>', unsafe_allow_html=True)
@@ -294,7 +290,7 @@ if submitted:
         # Preparar dados para o template
         dados_template = {
             # Valor e tipo
-            "valor": valor,
+            "valor": valor or "",
             "aluguel": "✓" if aluguel else "",
             "venda": "✓" if venda else "",
             
@@ -306,58 +302,58 @@ if submitted:
             "outros": "✓" if outros else "",
             
             # Dados do imóvel
-            "enderecoImovel": endereco_imovel,
-            "nImovel": n_imovel,
-            "compl": compl,
-            "bairroImovel": bairro_imovel,
-            "cidadeImovel": cidade_imovel,
-            "UFImovel": uf_imovel,
-            "quartoImovel": quarto_imovel,
-            "suiteImovel": suite_imovel,
-            "cozinhImovel": cozinha_imovel,
-            "ATImovel": at_imovel,
-            "salaImovel": sala_imovel,
-            "copaImovel": copa_imovel,
-            "banheiroImovel": banheiro_imovel,
-            "ACImovel": ac_imovel,
-            "Quintal": quintal,
-            "GaragemImovel": garagem_imovel,
-            "areaServImovel": area_serv_imovel,
-            "revestimento": revestimento,
-            "esquadrilha": esquadrilha,
-            "piso": piso,
-            "situacao": situacao,
-            "visitas": visitas,
-            "divulgacao": divulgacao,
-            "IPTU": iptu,
-            "localizacao": localizacao,
-            "observacoes": observacoes,
+            "enderecoImovel": endereco_imovel or "",
+            "nImovel": n_imovel or "",
+            "compl": compl or "",
+            "bairroImovel": bairro_imovel or "",
+            "cidadeImovel": cidade_imovel or "",
+            "UFImovel": uf_imovel or "",
+            "quartoImovel": quarto_imovel or "",
+            "suiteImovel": suite_imovel or "",
+            "cozinhImovel": cozinha_imovel or "",
+            "ATImovel": at_imovel or "",
+            "salaImovel": sala_imovel or "",
+            "copaImovel": copa_imovel or "",
+            "banheiroImovel": banheiro_imovel or "",
+            "ACImovel": ac_imovel or "",
+            "Quintal": quintal or "",
+            "GaragemImovel": garagem_imovel or "",
+            "areaServImovel": area_serv_imovel or "",
+            "revestimento": revestimento or "",
+            "esquadrilha": esquadrilha or "",
+            "piso": piso or "",
+            "situacao": situacao or "",
+            "visitas": visitas or "",
+            "divulgacao": divulgacao or "",
+            "IPTU": iptu or "",
+            "localizacao": localizacao or "",
+            "observacoes": observacoes or "",
             
             # Características
             "interfone": "✓" if interfone else "",
             "areaPriv": "✓" if area_priv else "",
             "churrasqueira": "✓" if churrasqueira else "",
-            "sala_de_jogos": "✓" if st.session_state.get('sala_jogos') else "",
+            "sala_de_jogos": "",
             "lavabo": "✓" if lavabo else "",
             "ArmQuarto": "✓" if arm_quarto else "",
             "AQsOLAR": "✓" if aq_solar else "",
-            "salaoFests": "✓" if st.session_state.get('salao_festas') else "",
+            "salaoFests": "",
             "despensa": "✓" if despensa else "",
             "armCozinha": "✓" if arm_cozinha else "",
             "Aqgas": "✓" if aq_gas else "",
-            "numerodepavimentos": numero_pavimentos,
+            "numerodepavimentos": numero_pavimentos or "",
             "DCE": "✓" if dce else "",
             "boxBanehir": "✓" if box_banheiro else "",
             "aquecEletrico": "✓" if aquec_eletrico else "",
-            "numeroapto": numero_apto,
+            "numeroapto": numero_apto or "",
             "varanda": "✓" if varanda else "",
             "areaLazer": "✓" if area_lazer else "",
             "porteiroFísico": "✓" if porteiro_fisico else "",
-            "garagem": garagem_li,
+            "garagem": garagem_li or "",
             "rouparia": "✓" if rouparia else "",
             "closet": "✓" if closet else "",
             "sauna": "✓" if sauna else "",
-            "nelevador": n_elevador,
+            "nelevador": n_elevador or "",
             "box": "✓" if box else "",
             "salaGinastica": "✓" if sala_ginastica else "",
             "piscina": "✓" if piscina else "",
@@ -367,29 +363,29 @@ if submitted:
             "salaTV": "✓" if sala_tv else "",
             "SACADA": "✓" if sacada else "",
             "quadra": "✓" if quadra else "",
-            "topografia": topografia,
-            "valorCond": valor_cond,
-            "metFrente": met_frente,
+            "topografia": topografia or "",
+            "valorCond": valor_cond or "",
+            "metFrente": met_frente or "",
             
             # Dados do proprietário
-            "nomeProprietario": nome_proprietario,
-            "ederecoProprietario": endereco_proprietario,
-            "numeroProprietario": numero_proprietario,
-            "CompleProprietario": compl_proprietario,
-            "bairroProprietario": bairro_proprietario,
-            "cidadeProprietario": cidade_proprietario,
-            "UFPropritario": uf_proprietario,
-            "CpfProprietario": cpf_proprietario,
-            "RGProprietario": rg_proprietario,
-            "emailProprietario": email_proprietario,
-            "telefoneProprietario": telefone_proprietario,
-            "celularProprietario": celular_proprietario,
+            "nomeProprietario": nome_proprietario or "",
+            "ederecoProprietario": endereco_proprietario or "",
+            "numeroProprietario": numero_proprietario or "",
+            "CompleProprietario": compl_proprietario or "",
+            "bairroProprietario": bairro_proprietario or "",
+            "cidadeProprietario": cidade_proprietario or "",
+            "UFPropritario": uf_proprietario or "",
+            "CpfProprietario": cpf_proprietario or "",
+            "RGProprietario": rg_proprietario or "",
+            "emailProprietario": email_proprietario or "",
+            "telefoneProprietario": telefone_proprietario or "",
+            "celularProprietario": celular_proprietario or "",
             
             # Data e captador
-            "dia": dia,
-            "mes": mes,
-            "ano": ano,
-            "nomeCaptador": nome_captador,
+            "dia": dia or "",
+            "mes": mes or "",
+            "ano": ano or "",
+            "nomeCaptador": nome_captador or "",
             
             # Chaves
             "copiaVillares": "✓" if copia_villares else "",
@@ -423,22 +419,3 @@ if submitted:
         st.error(f"❌ Erro ao gerar a ficha: {str(e)}")
         st.info("ℹ️ Verifique se o arquivo 'ficha_de_captacao.docx' está na mesma pasta do aplicativo.")
 
-# ----------------- Informações de uso -----------------
-with st.expander("ℹ️ Instruções de Uso"):
-    st.markdown("""
-    **Como usar este formulário:**
-    
-    1. **Preencha os campos** que desejar (nenhum campo é obrigatório)
-    2. **Selecione as características** do imóvel marcando as checkboxes correspondentes
-    3. **Forneça os dados** do proprietário
-    4. **Clique em 'Gerar Ficha de Captação'** para criar o documento
-    5. **Baixe o arquivo** usando o botão que aparecerá após a geração
-    
-    **Observação:** 
-    - Todos os campos são opcionais
-    - O documento será gerado mesmo com campos em branco
-    - Campos vazios aparecerão como espaços em branco no documento final
-    """)
-
-st.markdown("---")
-st.markdown("**Villares Imóveis** - Sistema de Cadastro de Imóveis")
