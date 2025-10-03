@@ -117,19 +117,23 @@ def login():
         # Título compacto
         st.markdown("<h4 style='text-align: center; margin: 5px 0 10px 0; font-size: 28px;'>Sistema Villares Imóveis</h4>", unsafe_allow_html=True)
         
-        # CSS apenas para o botão de login (mantém verde)
+        # CSS para o botão verde (APENAS login)
         st.markdown("""
             <style>
-                button[data-testid="baseButton-secondary"][kind="secondary"] {
+                div[data-testid="stButton"] > button {
                     background-color: #4CAF50 !important;
                     color: white !important;
-                    border: none !important;
                     padding: 8px 20px !important;
+                    border: none !important;
                     border-radius: 6px !important;
                     font-size: 14px !important;
                     font-weight: bold !important;
+                    display: block !important;
+                    margin: 10px auto !important;
+                    width: 40px auto !important;
+                    min-width: 120px !important;
                 }
-                button[data-testid="baseButton-secondary"][kind="secondary"]:hover {
+                div[data-testid="stButton"] > button:hover {
                     background-color: #45a049 !important;
                 }
             </style>
@@ -175,81 +179,116 @@ def dashboard():
     from theme import apply_theme
     apply_theme()
     
-    # CSS específico para o dashboard (complementar ao theme.py)
+    # CSS para o dashboard (MANTIDO ORIGINAL)
     st.markdown("""
         <style>
-            .dashboard-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 20px;
-                margin: 20px 0;
+            .main-dashboard-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
             }
-            
+            .section-header {
+                text-align: center;
+                margin: 30px 0 20px 0;
+                padding: 15px;
+                background-color: #f0f2f6;
+                border-radius: 10px;
+                border-left: 5px solid #4CAF50;
+            }
+            .card-button {
+                background-color: white;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                padding: 25px 15px;
+                text-align: center;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .card-button:hover {
+                border-color: #4CAF50;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            }
             .card-icon {
                 font-size: 32px;
                 margin-bottom: 10px;
             }
-            
             .card-title {
                 font-weight: 600;
                 font-size: 14px;
-                color: var(--text-color);
+                color: #333;
             }
-            
+            .planilha-button {
+                background-color: white;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                padding: 25px 15px;
+                text-align: center;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                height: 120px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                color: #333 !important;
+            }
+            .planilha-button:hover {
+                border-color: #4CAF50;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+                text-decoration: none;
+                color: #333 !important;
+            }
             .planilha-title {
                 font-weight: 600;
                 font-size: 16px !important;
-                color: var(--text-color);
+                color: #333;
                 margin-bottom: 8px;
             }
-            
             .planilha-desc {
                 font-size: 13px !important;
-                color: var(--text-color);
-                opacity: 0.8;
+                color: #666;
                 line-height: 1.3;
             }
-            
             .user-info {
-                background-color: var(--secondary-bg);
+                background-color: #f8f9fa;
                 padding: 15px;
                 border-radius: 8px;
-                border-left: 4px solid var(--accent-color);
+                border-left: 4px solid #4CAF50;
                 margin-bottom: 15px;
-                color: var(--text-color);
             }
-            
             .frase-container {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white !important;
+                color: white;
                 padding: 20px;
                 border-radius: 10px;
                 margin: 15px 0;
                 text-align: center;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             }
-            
             .frase-titulo {
                 font-size: 14px;
                 font-weight: bold;
                 margin-bottom: 8px;
                 opacity: 0.9;
-                color: white !important;
             }
-            
             .frase-texto {
                 font-size: 13px;
                 font-style: italic;
                 line-height: 1.4;
                 margin: 0;
-                color: white !important;
             }
-            
             .data-atual {
                 font-size: 12px;
                 opacity: 0.8;
                 margin-top: 8px;
-                color: white !important;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -298,7 +337,7 @@ def dashboard():
                 logo = Image.open("villares.png")
                 st.image(logo, width=300)
         with col_title:
-            st.markdown("<h1 style='margin-top:20px;'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
+            st.markdown("<h1 style='margin-top:20px; color:#333;'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
             st.markdown("### Villares Imobiliária", unsafe_allow_html=True)
 
         st.markdown("---")
@@ -370,16 +409,15 @@ def dashboard():
         
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Chamando scripts das páginas
+    # Chamando scripts - CORRIGIDO: sem container conflitante
     else:
-        st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
-        
+        # CORREÇÃO: Removido o container que quebrava o botão voltar
         col_back, col_title = st.columns([1, 4])
         with col_back:
             if st.button("⬅️ VOLTAR", use_container_width=True):
                 mudar_pagina("inicial")
         with col_title:
-            st.markdown(f"<h2>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='color:#333;'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
         
         st.markdown("---")
 
@@ -406,8 +444,6 @@ def dashboard():
         except Exception as e:
             st.error(f"Erro ao carregar a página: {e}")
             st.info("Tente voltar para a página inicial e acessar novamente.")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:

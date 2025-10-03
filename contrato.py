@@ -99,6 +99,42 @@ def app():
 
     st.set_page_config(page_title="Gerador de Contrato de Locação", layout="centered")
     
+    # CSS ORIGINAL mantido
+    st.markdown("""
+        <style>
+            .main-container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .section-header {
+                text-align: center;
+                margin: 25px 0 15px 0;
+                padding: 12px;
+                background-color: #f0f2f6;
+                border-radius: 8px;
+                border-left: 4px solid #4CAF50;
+            }
+            .stButton button {
+                width: 100%;
+            }
+            .warning-box {
+                background-color: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+            }
+            .subheader {
+                margin: 20px 0 10px 0;
+                padding: 10px;
+                background-color: #f8f9fa;
+                border-radius: 5px;
+                border-left: 3px solid #2196F3;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
     st.title("📄 CONTRATO DE LOCAÇÃO")
