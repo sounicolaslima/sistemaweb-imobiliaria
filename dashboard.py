@@ -409,8 +409,7 @@ def dashboard():
 
     # Chamando scripts
     else:
-        st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
-        
+
         col_back, col_title = st.columns([1, 4])
         with col_back:
             if st.button("⬅️ VOLTAR", use_container_width=True):
@@ -439,7 +438,7 @@ def dashboard():
             import recibo
             recibo.app()
         
-        st.markdown('</div>', unsafe_allow_html=True)
+    
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:
