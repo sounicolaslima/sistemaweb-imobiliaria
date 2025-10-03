@@ -335,8 +335,8 @@ def dashboard():
                 logo = Image.open("villares.png")
                 st.image(logo, width=300)
         with col_title:
-            st.markdown("<h1 style='margin-top:20px; color:var(--text-color,#333);'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
-            st.markdown("<h3 style='color:var(--text-color,#333);'>Villares Imobiliária</h3>", unsafe_allow_html=True)
+            st.markdown("<h1 style='margin-top:20px; color:white; font-weight:bold;'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color:white;'>Villares Imobiliária</h3>", unsafe_allow_html=True)
 
         st.markdown("---")
         
@@ -416,7 +416,7 @@ def dashboard():
             if st.button("⬅️ VOLTAR", use_container_width=True):
                 mudar_pagina("inicial")
         with col_title:
-            st.markdown(f"<h2 style='color:var(--text-color,#333);'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='color:white; font-weight:bold;'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
         
         st.markdown("---")
 
