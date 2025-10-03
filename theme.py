@@ -29,6 +29,8 @@ def apply_theme():
         accent_color = "#4CAF50"
         card_bg = "#1E1E1E"
         hover_bg = "#2A2A2A"
+        button_bg = "#2A2A2A"
+        button_hover = "#3A3A3A"
     else:
         # TEMA CLARO
         primary_bg = "#FFFFFF"
@@ -38,6 +40,8 @@ def apply_theme():
         accent_color = "#4CAF50"
         card_bg = "#FFFFFF"
         hover_bg = "#F8F9FA"
+        button_bg = "#F8F9FA"
+        button_hover = "#E9ECEF"
     
     st.markdown(f"""
     <style>
@@ -50,6 +54,8 @@ def apply_theme():
         --accent-color: {accent_color};
         --card-bg: {card_bg};
         --hover-bg: {hover_bg};
+        --button-bg: {button_bg};
+        --button-hover: {button_hover};
     }}
     
     /* ===== ESTILOS GLOBAIS ===== */
@@ -149,16 +155,32 @@ def apply_theme():
         border: 1px solid var(--border-color) !important;
     }}
     
-    /* ===== BOTÕES DO STREAMLIT ===== */
+    /* ===== BOTÕES DO STREAMLIT - ESTILO ORIGINAL ===== */
     .stButton > button {{
-        background-color: var(--accent-color) !important;
-        color: white !important;
-        border: none !important;
+        background-color: var(--button-bg) !important;
+        color: var(--text-color) !important;
+        border: 1px solid var(--border-color) !important;
         border-radius: 6px !important;
-        font-weight: 500 !important;
+        font-weight: 400 !important;
+        transition: all 0.3s ease !important;
     }}
     
     .stButton > button:hover {{
+        background-color: var(--button-hover) !important;
+        border-color: var(--accent-color) !important;
+        color: var(--text-color) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }}
+    
+    /* Botão primário (apenas para botões específicos) */
+    .stButton > button[data-testid*="primary"] {{
+        background-color: var(--accent-color) !important;
+        color: white !important;
+        border: none !important;
+    }}
+    
+    .stButton > button[data-testid*="primary"]:hover {{
         background-color: {accent_color}DD !important;
         color: white !important;
     }}
@@ -260,6 +282,18 @@ def apply_theme():
         /* Sidebar */
         .st-emotion-cache-1cypcdb {
             background-color: var(--secondary-bg) !important;
+        }
+        
+        /* Botões do formulário - estilo original */
+        div[data-testid="stForm"] .stButton > button {
+            background-color: var(--button-bg) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+        
+        div[data-testid="stForm"] .stButton > button:hover {
+            background-color: var(--button-hover) !important;
+            border-color: var(--accent-color) !important;
         }
     </style>
     """, unsafe_allow_html=True)
