@@ -29,6 +29,25 @@ def apply_theme():
         border-left: 4px solid #4CAF50;
     }
     
+    /* 👇 ADICIONE ESTAS REGRAS PARA OS TÍTULOS */
+    /* TÍTULOS - se adaptam ao tema */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--text-color, #000000) !important;
+    }
+    
+    .stTitle {
+        color: var(--text-color, #000000) !important;
+    }
+    
+    .stMarkdown h1,
+    .stMarkdown h2, 
+    .stMarkdown h3,
+    .stMarkdown h4,
+    .stMarkdown h5,
+    .stMarkdown h6 {
+        color: var(--text-color, #000000) !important;
+    }
+    
     /* Cores que se adaptam automaticamente */
     .stTextInput input, .stTextArea textarea, .stSelectbox select {
         background-color: var(--background-color) !important;
