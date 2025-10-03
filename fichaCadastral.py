@@ -81,7 +81,7 @@ def app():
 
     col_back, col_title = st.columns([1, 4])
     with col_back:
-        if st.button("⬅️ VOLTAR", use_container_width=True):
+        if st.button("⬅️ VOLTAR", use_container_width=True, key="voltar_ficha_cadastral"):
             st.session_state.pagina = "inicial"
             st.rerun()
     with col_title:
@@ -94,7 +94,7 @@ def app():
     with col1:
         cpf = st.text_input("CPF do Locatário", placeholder="000.000.000-00")
     with col2:
-        if st.button("🔍 Carregar", use_container_width=True):
+        if st.button("🔍 Carregar", use_container_width=True, key="carregar_ficha_cadastral"):
             if cpf in dados_todos:
                 dados = dados_todos[cpf]
                 st.session_state.update(dados)
@@ -126,7 +126,7 @@ def app():
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("➕ Adicionar Fiador", use_container_width=True):
+        if st.button("➕ Adicionar Fiador", use_container_width=True, key="adicionar_fiador_ficha"):
             st.session_state.fiadores.append({
                 "nome": "", "rg": "", "cpf": "", "end": "", "cel": "", "email": ""
             })
@@ -183,7 +183,7 @@ def app():
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("➕ Adicionar Característica", use_container_width=True):
+        if st.button("➕ Adicionar Característica", use_container_width=True, key="adicionar_caracteristica_ficha"):
             st.session_state.caracteristicas.append("")
             st.rerun()
 

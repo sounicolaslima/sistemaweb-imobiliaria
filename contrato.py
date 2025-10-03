@@ -143,7 +143,7 @@ def app():
 
     col_back, col_title = st.columns([1, 4])
     with col_back:
-        if st.button("⬅️ VOLTAR", use_container_width=True):
+        if st.button("⬅️ VOLTAR", use_container_width=True, key="voltar_contrato_locacao"):
             st.session_state.pagina = "inicial"
             st.rerun()
     with col_title:
@@ -160,7 +160,7 @@ def app():
         dados_ficha["cpf"] = cpf_input
     
     with col2:
-        if st.button("🔍 Carregar", use_container_width=True):
+        if st.button("🔍 Carregar", use_container_width=True, key="carregar_dados_locacao"):
             dados_ficha.update(carregar_por_cpf(cpf_input))
 
     # Função para criar campos
@@ -206,7 +206,7 @@ def app():
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("➕ Adicionar Fiador", use_container_width=True):
+        if st.button("➕ Adicionar Fiador", use_container_width=True, key="adicionar_fiador"):
             st.session_state.num_fiadores += 1
             st.rerun()
 

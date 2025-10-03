@@ -59,7 +59,7 @@ def app():
 
     col_back, col_title = st.columns([1, 4])
     with col_back:
-        if st.button("⬅️ VOLTAR", use_container_width=True):
+        if st.button("⬅️ VOLTAR", use_container_width=True, key="voltar_vistoria"):
             st.session_state.pagina = "inicial"
             st.rerun()
     with col_title:
@@ -86,7 +86,7 @@ def app():
     with col1:
         cpf_input = st.text_input("CPF do Locatário", key="cpf_vistoria", placeholder="000.000.000-00")
     with col2:
-        if st.button("🔍 Carregar Dados", use_container_width=True):
+        if st.button("🔍 Carregar Dados", use_container_width=True, key="carregar_dados_vistoria"):
             if cpf_input in dados_todos:
                 dados_carregados = dados_todos[cpf_input]
                 # Atualizar session states
@@ -157,11 +157,11 @@ def app():
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("➕ Adicionar Fiador", use_container_width=True):
+        if st.button("➕ Adicionar Fiador", use_container_width=True, key="adicionar_fiador_vistoria"):
             st.session_state.fiadores.append({"nome": "", "cpf": "", "rg": "", "endereco": "", "telefone": ""})
             st.rerun()
     with col2:
-        if len(st.session_state.fiadores) > 1 and st.button("➖ Remover Fiador", use_container_width=True):
+        if len(st.session_state.fiadores) > 1 and st.button("➖ Remover Fiador", use_container_width=True, key="remover_fiador_vistoria"):
             st.session_state.fiadores.pop()
             st.rerun()
 
@@ -209,7 +209,7 @@ def app():
     # Botão para adicionar novo cômodo
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("➕ Adicionar Novo Cômodo", use_container_width=True):
+        if st.button("➕ Adicionar Novo Cômodo", use_container_width=True, key="adicionar_comodo_vistoria"):
             st.session_state.comodos.append({
                 "nome": f"Cômodo {len(st.session_state.comodos) + 1}",
                 "caracteristicas": [
@@ -219,7 +219,7 @@ def app():
             })
             st.rerun()
     with col2:
-        if len(st.session_state.comodos) > 1 and st.button("➖ Remover Último Cômodo", use_container_width=True):
+        if len(st.session_state.comodos) > 1 and st.button("➖ Remover Último Cômodo", use_container_width=True, key="remover_comodo_vistoria"):
             st.session_state.comodos.pop()
             st.rerun()
 

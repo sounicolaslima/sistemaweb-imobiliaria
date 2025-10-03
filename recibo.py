@@ -78,7 +78,7 @@ def app():
     
     col_back, col_title = st.columns([1, 4])
     with col_back:
-        if st.button("⬅️ VOLTAR", use_container_width=True):
+        if st.button("⬅️ VOLTAR", use_container_width=True, key="voltar_recibo_aluguel"):
             st.session_state.pagina = "inicial"
             st.rerun()
     with col_title:

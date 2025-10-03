@@ -315,7 +315,7 @@ def dashboard():
             st.markdown('</div>', unsafe_allow_html=True)
         
         # Botão sair
-        if st.button("🚪 Sair do Sistema", use_container_width=True):
+        if st.button("🚪 Sair do Sistema", use_container_width=True, key="sair_sistema"):
             st.session_state.logged_in = False
             st.session_state.usuario = None
             st.session_state.frase_do_dia = ""
@@ -324,7 +324,7 @@ def dashboard():
         
         st.markdown("---")
         st.markdown("### 📊 Navegação")
-        if st.button("🏠 Página Inicial", use_container_width=True):
+        if st.button("🏠 Página Inicial", use_container_width=True, key="pagina_inicial_sidebar"):
             mudar_pagina("inicial")
 
     if st.session_state.pagina == "inicial":
@@ -415,7 +415,7 @@ def dashboard():
         
         col_back, col_title = st.columns([1, 4])
         with col_back:
-            if st.button("⬅️ VOLTAR", use_container_width=True):
+            if st.button("⬅️ VOLTAR", use_container_width=True, key="voltar_dashboard"):
                 mudar_pagina("inicial")
         with col_title:
             st.markdown(f"<h2 style='color:#333;'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
