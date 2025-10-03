@@ -84,6 +84,9 @@ def buscar_frase_do_dia(usuario):
 
 # ----------------- Função de Login -----------------
 def login():
+    from theme import apply_theme
+    apply_theme()
+    
     col_left, col_center, col_right = st.columns([1, 3, 1])
 
     with col_center:
