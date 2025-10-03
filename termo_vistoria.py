@@ -21,7 +21,12 @@ dados_todos = carregar_dados()
 
 # ----------------- Função Principal -----------------
 def app():
+    from theme import apply_theme
+    apply_theme()
+    
     st.title("📋 GERADOR DE TERMO DE VISTORIA")
+
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
     # CSS para centralizar e estilizar
     st.markdown("""

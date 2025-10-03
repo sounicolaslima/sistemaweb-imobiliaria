@@ -78,6 +78,9 @@ def carregar_por_cpf(cpf):
 
 # ---------------- Função app ----------------
 def app():
+    from theme import apply_theme
+    apply_theme()
+    
     st.set_page_config(page_title="Gerador de Contrato de Administração", layout="centered")
     
     # CSS para centralizar e estilizar

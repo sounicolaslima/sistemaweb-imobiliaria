@@ -65,9 +65,14 @@ def calcular_total(recibo):
         return '0,00'
 
 def app():
+    from theme import apply_theme
+    apply_theme()
+
     st.set_page_config(page_title="Recibo de Aluguel", page_icon="🏠", layout="centered")
     
     st.title("📄 Recibo de Aluguel - Villares Imóveis")
+
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
     # Inicializar lista de recibos
     if 'recibos' not in st.session_state:
@@ -182,6 +187,7 @@ def app():
        - 1 recibo → Template único
        - 2 recibos → Template duplo (2 por página)
     """)
+st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     app()

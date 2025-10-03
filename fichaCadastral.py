@@ -5,6 +5,9 @@ import os, json
 from io import BytesIO
 
 def app():
+    from theme import apply_theme
+    apply_theme()
+    
     # ----------------- Caminho relativo do arquivo Word -----------------
     base_dir = os.path.dirname(__file__)  # pasta onde está o script
     CAMINHO_DOCX = os.path.join(base_dir, "fichaCadastral.docx")  # template

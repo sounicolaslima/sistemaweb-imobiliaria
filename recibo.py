@@ -65,9 +65,14 @@ def gerar_recibo(dados):
         return None
 
 def app():
+    from theme import apply_theme
+    apply_theme()
+
     st.set_page_config(page_title="Recibo de Aluguel", page_icon="🏠", layout="centered")
     
     st.title("📄 Recibo de Aluguel")
+
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
     # Verificação do template
     if not os.path.exists(TEMPLATE_RECIBO):
@@ -207,6 +212,7 @@ def app():
     5. Imprima o recibo gerado
     
     """)
+st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     app()

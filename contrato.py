@@ -94,6 +94,9 @@ def gerar_contrato(dados):
 
 # ---------------- Função app ----------------
 def app():
+    from theme import apply_theme
+    apply_theme()
+
     st.set_page_config(page_title="Gerador de Contrato de Locação", layout="centered")
     
     # CSS para centralizar e estilizar
@@ -135,6 +138,7 @@ def app():
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
     st.title("📄 CONTRATO DE LOCAÇÃO")
+
     dados_ficha = {}
 
     # ----------------- CPF e Busca -----------------
