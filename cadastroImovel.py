@@ -1,81 +1,68 @@
+# cadastroImovel.py
 import streamlit as st
-from datetime import datetime
 from docxtpl import DocxTemplate
-import io
+import os, json
+from io import BytesIO
+from datetime import datetime
 
-# ----------------- Configuração da página -----------------
-st.set_page_config(
-    page_title="Cadastro de Imóvel - Gerador de Ficha",
-    page_icon="🏠",
-    layout="wide"
-)
-
-# ----------------- Estilo CSS -----------------
-st.markdown("""
-<style>
-    .main-header {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #1f77b4;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    .section-header {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #2e86ab;
-        margin: 1.5rem 0 1rem 0;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #2e86ab;
-    }
-    .stButton button {
-        width: 100%;
-        background-color: #2e86ab;
-        color: white;
-        font-weight: bold;
-        padding: 0.75rem;
-        border: none;
-        border-radius: 5px;
-    }
-    .stButton button:hover {
-        background-color: #1f77b4;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# ----------------- Botão Voltar -----------------
-col1, col2 = st.columns([1, 5])
-with col1:
-    if st.button("← Voltar"):
-        st.markdown('[Clique aqui se não redirecionar automaticamente](/?page=inicial)', unsafe_allow_html=True)
-
-# ----------------- Título principal -----------------
-st.markdown('<div class="main-header">🏠 CADASTRO DE IMÓVEL</div>', unsafe_allow_html=True)
-
-# ----------------- Funções auxiliares -----------------
-def criar_colunas(num_cols):
-    return st.columns(num_cols)
-
-# ----------------- Formulário principal -----------------
-with st.form("formulario_imovel"):
-
-    # Seção: Valor / Tipo de Negócio
-    st.markdown('<div class="section-header">💰 Valor / Tipo de Negócio</div>', unsafe_allow_html=True)
+def app():
+    from theme import apply_theme
+    apply_theme()
     
-    col1, col2, col3 = criar_colunas(3)
+    # ----------------- Caminho relativo do arquivo Word -----------------
+    base_dir = os.path.dirname(__file__)  # pasta onde está o script
+    CAMINHO_DOCX = os.path.join(base_dir, "Ficha_de_captacao.docx")  # template
+
+    # ----------------- Configuração da Página -----------------
+    st.set_page_config(page_title="Cadastro de Imóvel", layout="wide")
+    
+    # CSS para centralizar e estilizar
+    st.markdown("""
+        <style>
+            .main-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .section-header {
+                text-align: center;
+                margin: 25px 0 15px 0;
+                padding: 12px;
+                background-color: #f0f2f6;
+                border-radius: 8px;
+                border-left: 4px solid #4CAF50;
+            }
+            .stButton button {
+                width: 100%;
+            }
+            .checkbox-container {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin: 10px 0;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
+    
+    st.title("🏠 CADASTRO DE IMÓVEL")
+
+    # ----------------- Valor / Tipo de Negócio -----------------
+    st.markdown('<div class="section-header"><h3>VALOR / TIPO DE NEGÓCIO</h3></div>', unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
         valor = st.text_input("Valor (R$)", placeholder="Ex: 250.000,00")
     with col2:
         st.write("Tipo de Negócio")
         aluguel = st.checkbox("Aluguel", value=True)
         venda = st.checkbox("Venda")
-    with col3:
-        st.write("&nbsp;")
 
-    # Seção: Tipo de Imóvel
-    st.markdown('<div class="section-header">🏡 Tipo de Imóvel</div>', unsafe_allow_html=True)
+    # ----------------- Tipo de Imóvel -----------------
+    st.markdown('<div class="section-header"><h3>TIPO DE IMÓVEL</h3></div>', unsafe_allow_html=True)
     
-    col1, col2, col3, col4, col5 = criar_colunas(5)
+    col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
         casa = st.checkbox("Casa")
     with col2:
@@ -87,60 +74,60 @@ with st.form("formulario_imovel"):
     with col5:
         outros = st.checkbox("Outros")
 
-    # Seção: Dados do Imóvel
-    st.markdown('<div class="section-header">📋 Dados do Imóvel</div>', unsafe_allow_html=True)
+    # ----------------- Dados do Imóvel -----------------
+    st.markdown('<div class="section-header"><h3>DADOS DO IMÓVEL</h3></div>', unsafe_allow_html=True)
     
     # Linha 1 - Endereço
-    col1, col2, col3 = criar_colunas(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        endereco_imovel = st.text_input("Endereço", placeholder="Rua, Avenida, etc.")
+        enderecoImovel = st.text_input("Endereço", placeholder="Rua, Avenida, etc.")
     with col2:
-        n_imovel = st.text_input("Número", placeholder="123")
+        nImovel = st.text_input("Número", placeholder="123")
     with col3:
         compl = st.text_input("Complemento", placeholder="Apto, Bloco, etc.")
 
     # Linha 2 - Bairro, Cidade, UF
-    col1, col2, col3 = criar_colunas(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        bairro_imovel = st.text_input("Bairro", placeholder="Centro")
+        bairroImovel = st.text_input("Bairro", placeholder="Centro")
     with col2:
-        cidade_imovel = st.text_input("Cidade", placeholder="Lavras")
+        cidadeImovel = st.text_input("Cidade", placeholder="Lavras")
     with col3:
-        uf_imovel = st.text_input("UF", placeholder="MG", max_chars=2)
+        UFImovel = st.text_input("UF", placeholder="MG", max_chars=2)
 
-    # Linha 3 - Quartos, Suítes, Cozinha
-    col1, col2, col3, col4 = criar_colunas(4)
+    # Linha 3 - Quartos, Suítes, Cozinha, Área Total
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        quarto_imovel = st.text_input("Quartos", placeholder="3")
+        quartoImovel = st.text_input("Quartos", placeholder="3")
     with col2:
-        suite_imovel = st.text_input("Suítes", placeholder="1")
+        suiteImovel = st.text_input("Suítes", placeholder="1")
     with col3:
-        cozinha_imovel = st.text_input("Cozinhas", placeholder="1")
+        cozinhImovel = st.text_input("Cozinhas", placeholder="1")
     with col4:
-        at_imovel = st.text_input("Área Total (m²)", placeholder="150")
+        ATImovel = st.text_input("Área Total (m²)", placeholder="150")
 
     # Linha 4 - Salas, Copa, Banheiro, Área Construída
-    col1, col2, col3, col4 = criar_colunas(4)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        sala_imovel = st.text_input("Salas", placeholder="2")
+        salaImovel = st.text_input("Salas", placeholder="2")
     with col2:
-        copa_imovel = st.text_input("Copas", placeholder="1")
+        copaImovel = st.text_input("Copas", placeholder="1")
     with col3:
-        banheiro_imovel = st.text_input("Banheiros", placeholder="2")
+        banheiroImovel = st.text_input("Banheiros", placeholder="2")
     with col4:
-        ac_imovel = st.text_input("Área Construída (m²)", placeholder="120")
+        ACImovel = st.text_input("Área Construída (m²)", placeholder="120")
 
     # Linha 5 - Quintal, Garagem, Área de Serviço
-    col1, col2, col3 = criar_colunas(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        quintal = st.text_input("Quintal", placeholder="Sim/Não")
+        Quintal = st.text_input("Quintal", placeholder="Sim/Não")
     with col2:
-        garagem_imovel = st.text_input("Vagas Garagem", placeholder="2")
+        GaragemImovel = st.text_input("Vagas Garagem", placeholder="2")
     with col3:
-        area_serv_imovel = st.text_input("Área de Serviço", placeholder="Sim/Não")
+        areaServImovel = st.text_input("Área de Serviço", placeholder="Sim/Não")
 
     # Linha 6 - Revestimento, Esquadrilha, Piso
-    col1, col2, col3 = criar_colunas(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
         revestimento = st.text_input("Revestimento", placeholder="Tipo de revestimento")
     with col2:
@@ -149,7 +136,7 @@ with st.form("formulario_imovel"):
         piso = st.text_input("Piso", placeholder="Tipo de piso")
 
     # Linha 7 - Situação, Visitas, Divulgação, IPTU
-    col1, col2, col3, col4 = criar_colunas(4)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         situacao = st.text_input("Situação", placeholder="Novo/Usado")
     with col2:
@@ -157,16 +144,16 @@ with st.form("formulario_imovel"):
     with col3:
         divulgacao = st.text_input("Meio de Divulgação", placeholder="Site, Jornal, etc.")
     with col4:
-        iptu = st.text_input("IPTU", placeholder="Valor do IPTU")
+        IPTU = st.text_input("IPTU", placeholder="Valor do IPTU")
 
-    # Linha 8 - Referência/Localização
+    # Referência/Localização
     localizacao = st.text_area("Referência/Localização", placeholder="Pontos de referência próximos")
 
-    # Seção: Características do Imóvel / Infraestrutura
-    st.markdown('<div class="section-header">🏊 Características do Imóvel / Infraestrutura</div>', unsafe_allow_html=True)
+    # ----------------- Características do Imóvel -----------------
+    st.markdown('<div class="section-header"><h3>CARACTERÍSTICAS DO IMÓVEL / INFRAESTRUTURA</h3></div>', unsafe_allow_html=True)
     
-    # Organizando as características em 3 colunas
-    col1, col2, col3 = criar_colunas(3)
+    st.markdown('<div class="checkbox-container">', unsafe_allow_html=True)
+    col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         interfone = st.checkbox("Interfone")
@@ -176,123 +163,115 @@ with st.form("formulario_imovel"):
         varanda = st.checkbox("Varanda")
         rouparia = st.checkbox("Rouparia")
         box = st.checkbox("Box Despejo")
-        escritorio = st.checkbox("Escritório")
-        sala_tv = st.checkbox("Sala de TV")
         
     with col2:
-        area_priv = st.checkbox("Área Privativa")
-        arm_quarto = st.checkbox("Arm. Quartos")
-        arm_cozinha = st.checkbox("Arm. Cozinha")
-        box_banheiro = st.checkbox("Box Banheiro")
-        area_lazer = st.checkbox("Área de Lazer")
+        areaPriv = st.checkbox("Área Privativa")
+        ArmQuarto = st.checkbox("Arm. Quartos")
+        armCozinha = st.checkbox("Arm. Cozinha")
+        boxBanehir = st.checkbox("Box Banheiro")
+        areaLazer = st.checkbox("Área de Lazer")
         closet = st.checkbox("Closet")
-        sala_ginastica = st.checkbox("Sala Ginástica")
-        area_claridade = st.checkbox("Área Claridade")
-        sacada = st.checkbox("Sacada")
+        salaGinastica = st.checkbox("Sala Ginástica")
         
     with col3:
         churrasqueira = st.checkbox("Churrasqueira")
-        aq_solar = st.checkbox("Aquec. Solar")
-        aq_gas = st.checkbox("Aquec. Gás")
-        aquec_eletrico = st.checkbox("Aquec. Elétrico")
-        porteiro_fisico = st.checkbox("Porteiro Físico")
+        AQsOLAR = st.checkbox("Aquec. Solar")
+        Aqgas = st.checkbox("Aquec. Gás")
+        aquecEletrico = st.checkbox("Aquec. Elétrico")
+        porteiroFisico = st.checkbox("Porteiro Físico")
         sauna = st.checkbox("Sauna")
         piscina = st.checkbox("Piscina")
-        playground = st.checkbox("Playground")
-        quadra = st.checkbox("Quadra de Esporte")
-
-    # Campos adicionais de infraestrutura
-    col1, col2, col3, col4 = criar_colunas(4)
-    with col1:
-        numero_pavimentos = st.text_input("N° Pavimentos", placeholder="Ex: 5")
-    with col2:
-        numero_apto = st.text_input("N° Apto/Andar", placeholder="Ex: 2º andar")
-    with col3:
-        garagem_li = st.text_input("Garagem L/I", placeholder="Livre/Irregular")
+        
     with col4:
-        n_elevador = st.text_input("N° Elevadores", placeholder="Ex: 2")
+        sala_de_jogos = st.checkbox("Salão de Jogos")
+        salaoFests = st.checkbox("Salão de Festas")
+        numerodepavimentos = st.checkbox("N° Pavimentos")
+        numeroapto = st.checkbox("N° Apto/Andar")
+        garagem = st.checkbox("Garagem L/I")
+        nelevador = st.checkbox("N° Elevador")
+        playground = st.checkbox("Playground")
+        quadra = st.checkbox("Quadra Esporte")
+        AREACLARIDAD = st.checkbox("Área Claridade")
+        SACADA = st.checkbox("Sacada")
+        salaTV = st.checkbox("Sala de TV")
+        escritorio = st.checkbox("Escritório")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    col1, col2 = criar_colunas(2)
+    # ----------------- Campos de Texto (3 últimas) -----------------
+    st.markdown('<div class="section-header"><h3>INFORMAÇÕES ADICIONAIS</h3></div>', unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
     with col1:
-        valor_cond = st.text_input("Valor Condomínio (R$)", placeholder="Ex: 300,00")
+        valorCond = st.text_input("Valor Condomínio (R$)", placeholder="Ex: 300,00")
     with col2:
-        met_frente = st.text_input("Metragem Frente", placeholder="Ex: 10m")
-
-    topografia = st.text_input("Topografia", placeholder="Ex: Plano")
+        metFrente = st.text_input("Metragem Frente", placeholder="Ex: 10m")
+    with col3:
+        topografia = st.text_input("Topografia", placeholder="Ex: Plano")
 
     # Observações
     observacoes = st.text_area("Observações", placeholder="Informações adicionais sobre o imóvel")
 
-    # Seção: Dados do Proprietário
-    st.markdown('<div class="section-header">👤 Dados do Proprietário</div>', unsafe_allow_html=True)
+    # ----------------- Dados do Proprietário -----------------
+    st.markdown('<div class="section-header"><h3>DADOS DO PROPRIETÁRIO</h3></div>', unsafe_allow_html=True)
     
-    # Linha 1 - Nome
-    nome_proprietario = st.text_input("Nome Completo", placeholder="Nome do proprietário")
-
-    # Linha 2 - Endereço
-    col1, col2, col3 = criar_colunas(3)
+    col1, col2 = st.columns(2)
     with col1:
-        endereco_proprietario = st.text_input("Endereço", placeholder="Endereço do proprietário")
-    with col2:
-        numero_proprietario = st.text_input("Número", placeholder="Nº")
-    with col3:
-        compl_proprietario = st.text_input("Complemento", placeholder="Complemento")
-
-    # Linha 3 - Bairro, Cidade, UF
-    col1, col2, col3 = criar_colunas(3)
-    with col1:
-        bairro_proprietario = st.text_input("Bairro", placeholder="Bairro")
-    with col2:
-        cidade_proprietario = st.text_input("Cidade", placeholder="Cidade")
-    with col3:
-        uf_proprietario = st.text_input("UF", placeholder="UF", max_chars=2)
-
-    # Linha 4 - CPF, RG, Email
-    col1, col2, col3 = criar_colunas(3)
-    with col1:
-        cpf_proprietario = st.text_input("CPF", placeholder="000.000.000-00")
-    with col2:
-        rg_proprietario = st.text_input("RG", placeholder="RG")
-    with col3:
-        email_proprietario = st.text_input("E-mail", placeholder="email@exemplo.com")
-
-    # Linha 5 - Telefones
-    col1, col2 = criar_colunas(2)
-    with col1:
-        telefone_proprietario = st.text_input("Telefone Fixo", placeholder="(35) 3821-0000")
-    with col2:
-        celular_proprietario = st.text_input("Celular", placeholder="(35) 99999-0000")
-
-    # Seção: Data e Captador
-    st.markdown('<div class="section-header">📅 Data e Captador</div>', unsafe_allow_html=True)
+        nomeProprietario = st.text_input("Nome Completo", placeholder="Nome do proprietário")
+        CpfProprietario = st.text_input("CPF", placeholder="000.000.000-00")
+        ederecoProprietario = st.text_input("Endereço", placeholder="Endereço do proprietário")
+        bairroProprietario = st.text_input("Bairro", placeholder="Bairro")
     
-    col1, col2, col3 = criar_colunas(3)
-    with col1:
-        dia = st.text_input("Dia", placeholder="DD", value=datetime.now().strftime("%d"))
     with col2:
-        mes = st.text_input("Mês", placeholder="MM", value=datetime.now().strftime("%m"))
-    with col3:
-        ano = st.text_input("Ano", placeholder="AAAA", value=datetime.now().strftime("%Y"))
+        RGProprietario = st.text_input("RG", placeholder="RG")
+        emailProprietario = st.text_input("E-mail", placeholder="email@exemplo.com")
+        numeroProprietario = st.text_input("Número", placeholder="Nº")
+        cidadeProprietario = st.text_input("Cidade", placeholder="Cidade")
 
-    nome_captador = st.text_input("Nome do Captador", placeholder="Seu nome")
+    col1, col2 = st.columns(2)
+    with col1:
+        telefoneProprietario = st.text_input("Telefone Fixo", placeholder="(35) 3821-0000")
+    with col2:
+        celularProprietario = st.text_input("Celular", placeholder="(35) 99999-0000")
 
-    # Seção: Situação das Chaves
-    st.markdown('<div class="section-header">🔑 Situação das Chaves</div>', unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        CompleProprietario = st.text_input("Complemento", placeholder="Complemento")
+    with col2:
+        UFPropritario = st.text_input("UF", placeholder="UF", max_chars=2)
+
+    # ----------------- Data e Captador -----------------
+    st.markdown('<div class="section-header"><h3>DATA E CAPTADOR</h3></div>', unsafe_allow_html=True)
     
-    col1, col2 = criar_colunas(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        copia_villares = st.checkbox("Cópia Villares Imóveis")
+        dia = st.text_input("Dia", value=datetime.now().strftime("%d"), placeholder="DD")
     with col2:
-        copia_proprietario = st.checkbox("Cópia do Proprietário")
+        mes = st.text_input("Mês", value=datetime.now().strftime("%m"), placeholder="MM")
+    with col3:
+        ano = st.text_input("Ano", value=datetime.now().strftime("%Y"), placeholder="AAAA")
 
-    # Botão de envio
-    submitted = st.form_submit_button("📄 Gerar Ficha de Captação")
+    nomeCaptador = st.text_input("Nome do Captador", placeholder="Seu nome")
 
-# ----------------- Processamento do formulário -----------------
-if submitted:
-    try:
-        # Preparar dados para o template - TODAS as variáveis do template
-        dados_template = {
+    # ----------------- Situação das Chaves -----------------
+    st.markdown('<div class="section-header"><h3>SITUAÇÃO DAS CHAVES</h3></div>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        copiaVillares = st.checkbox("Cópia Villares Imóveis")
+    with col2:
+        copiaProprietario = st.checkbox("Cópia do Proprietário")
+
+    # ----------------- Função gerar ficha -----------------
+    def gerar_ficha_streamlit():
+        if not os.path.exists(CAMINHO_DOCX):
+            st.error(f"Arquivo {CAMINHO_DOCX} não encontrado.")
+            return None
+
+        doc = DocxTemplate(CAMINHO_DOCX)
+        
+        # Preparar todos os dados para o template
+        dados = {
             # Valor e tipo
             "valor": valor or "",
             "aluguel": "✓" if aluguel else "",
@@ -306,139 +285,127 @@ if submitted:
             "outros": "✓" if outros else "",
             
             # Dados do imóvel
-            "enderecoImovel": endereco_imovel or "",
-            "nImovel": n_imovel or "",
+            "enderecoImovel": enderecoImovel or "",
+            "nImovel": nImovel or "",
             "compl": compl or "",
-            "bairroImovel": bairro_imovel or "",
-            "cidadeImovel": cidade_imovel or "",
-            "UFImovel": uf_imovel or "",
-            "quartoImovel": quarto_imovel or "",
-            "suiteImovel": suite_imovel or "",
-            "cozinhImovel": cozinha_imovel or "",
-            "ATImovel": at_imovel or "",
-            "salaImovel": sala_imovel or "",
-            "copaImovel": copa_imovel or "",
-            "banheiroImovel": banheiro_imovel or "",
-            "ACImovel": ac_imovel or "",
-            "Quintal": quintal or "",
-            "GaragemImovel": garagem_imovel or "",
-            "areaServImovel": area_serv_imovel or "",
+            "bairroImovel": bairroImovel or "",
+            "cidadeImovel": cidadeImovel or "",
+            "UFImovel": UFImovel or "",
+            "quartoImovel": quartoImovel or "",
+            "suiteImovel": suiteImovel or "",
+            "cozinhImovel": cozinhImovel or "",
+            "ATImovel": ATImovel or "",
+            "salaImovel": salaImovel or "",
+            "copaImovel": copaImovel or "",
+            "banheiroImovel": banheiroImovel or "",
+            "ACImovel": ACImovel or "",
+            "Quintal": Quintal or "",
+            "GaragemImovel": GaragemImovel or "",
+            "areaServImovel": areaServImovel or "",
             "revestimento": revestimento or "",
             "esquadrilha": esquadrilha or "",
             "piso": piso or "",
             "situacao": situacao or "",
             "visitas": visitas or "",
             "divulgacao": divulgacao or "",
-            "IPTU": iptu or "",
+            "IPTU": IPTU or "",
             "localizacao": localizacao or "",
             "observacoes": observacoes or "",
             
-            # Características - TODAS as variáveis do template
+            # Características (TODAS como checkbox)
             "interfone": "✓" if interfone else "",
-            "areaPriv": "✓" if area_priv else "",
+            "areaPriv": "✓" if areaPriv else "",
             "churrasqueira": "✓" if churrasqueira else "",
-            "sala_de_jogos": "",  # Não tem no formulário
+            "sala_de_jogos": "✓" if sala_de_jogos else "",
             "lavabo": "✓" if lavabo else "",
-            "ArmQuarto": "✓" if arm_quarto else "",
-            "AQsOLAR": "✓" if aq_solar else "",
-            "salaoFests": "",  # Não tem no formulário
+            "ArmQuarto": "✓" if ArmQuarto else "",
+            "AQsOLAR": "✓" if AQsOLAR else "",
+            "salaoFests": "✓" if salaoFests else "",
             "despensa": "✓" if despensa else "",
-            "armCozinha": "✓" if arm_cozinha else "",
-            "Aqgas": "✓" if aq_gas else "",
-            "numerodepavimentos": numero_pavimentos or "",
+            "armCozinha": "✓" if armCozinha else "",
+            "Aqgas": "✓" if Aqgas else "",
+            "numerodepavimentos": "✓" if numerodepavimentos else "",
             "DCE": "✓" if dce else "",
-            "boxBanehir": "✓" if box_banheiro else "",
-            "aquecEletrico": "✓" if aquec_eletrico else "",
-            "numeroapto": numero_apto or "",
+            "boxBanehir": "✓" if boxBanehir else "",
+            "aquecEletrico": "✓" if aquecEletrico else "",
+            "numeroapto": "✓" if numeroapto else "",
             "varanda": "✓" if varanda else "",
-            "areaLazer": "✓" if area_lazer else "",
-            "porteiroFísico": "✓" if porteiro_fisico else "",
-            "garagem": garagem_li or "",
+            "areaLazer": "✓" if areaLazer else "",
+            "porteiroFísico": "✓" if porteiroFisico else "",
+            "garagem": "✓" if garagem else "",
             "rouparia": "✓" if rouparia else "",
             "closet": "✓" if closet else "",
             "sauna": "✓" if sauna else "",
-            "nelevador": n_elevador or "",
+            "nelevador": "✓" if nelevador else "",
             "box": "✓" if box else "",
-            "salaGinastica": "✓" if sala_ginastica else "",
+            "salaGinastica": "✓" if salaGinastica else "",
             "piscina": "✓" if piscina else "",
             "escritorio": "✓" if escritorio else "",
-            "AREACLARIDAD": "✓" if area_claridade else "",
+            "AREACLARIDAD": "✓" if AREACLARIDAD else "",
             "playground": "✓" if playground else "",
-            "salaTV": "✓" if sala_tv else "",
-            "SACADA": "✓" if sacada else "",
+            "salaTV": "✓" if salaTV else "",
+            "SACADA": "✓" if SACADA else "",
             "quadra": "✓" if quadra else "",
-            "topografia": topografia or "",
-            "valorCond": valor_cond or "",
-            "metFrente": met_frente or "",
+            "topografia": topografia or "",  # Campo de texto
+            "valorCond": valorCond or "",    # Campo de texto
+            "metFrente": metFrente or "",    # Campo de texto
             
             # Dados do proprietário
-            "nomeProprietario": nome_proprietario or "",
-            "ederecoProprietario": endereco_proprietario or "",
-            "numeroProprietario": numero_proprietario or "",
-            "CompleProprietario": compl_proprietario or "",
-            "bairroProprietario": bairro_proprietario or "",
-            "cidadeProprietario": cidade_proprietario or "",
-            "UFPropritario": uf_proprietario or "",
-            "CpfProprietario": cpf_proprietario or "",
-            "RGProprietario": rg_proprietario or "",
-            "emailProprietario": email_proprietario or "",
-            "telefoneProprietario": telefone_proprietario or "",
-            "celularProprietario": celular_proprietario or "",
+            "nomeProprietario": nomeProprietario or "",
+            "ederecoProprietario": ederecoProprietario or "",
+            "numeroProprietario": numeroProprietario or "",
+            "CompleProprietario": CompleProprietario or "",
+            "bairroProprietario": bairroProprietario or "",
+            "cidadeProprietario": cidadeProprietario or "",
+            "UFPropritario": UFPropritario or "",
+            "CpfProprietario": CpfProprietario or "",
+            "RGProprietario": RGProprietario or "",
+            "emailProprietario": emailProprietario or "",
+            "telefoneProprietario": telefoneProprietario or "",
+            "celularProprietario": celularProprietario or "",
             
             # Data e captador
             "dia": dia or "",
             "mes": mes or "",
             "ano": ano or "",
-            "nomeCaptador": nome_captador or "",
+            "nomeCaptador": nomeCaptador or "",
             
             # Chaves
-            "copiaVillares": "✓" if copia_villares else "",
-            "copiaProprietario": "✓" if copia_proprietario else "",
+            "copiaVillares": "✓" if copiaVillares else "",
+            "copiaProprietario": "✓" if copiaProprietario else "",
         }
-        
-        # Carregar e processar o template
-        doc = DocxTemplate("Ficha_de_captacao.docx")
-        doc.render(dados_template)
-        
-        # Salvar o documento
-        buffer = io.BytesIO()
+
+        # Renderizar documento
+        doc.render(dados)
+
+        # Salvar apenas em memória
+        buffer = BytesIO()
         doc.save(buffer)
         buffer.seek(0)
-        
-        # Nome do arquivo
-        endereco_formatado = endereco_imovel.replace(" ", "_").replace(",", "") if endereco_imovel else "SemEndereco"
-        data_atual = datetime.now().strftime("%Y-%m-%d")
-        nome_arquivo = f"Ficha_Captacao_{endereco_formatado}_{data_atual}.docx"
-        
-        # Botão de download
-        st.success("✅ Ficha gerada com sucesso!")
-        st.download_button(
-            label="📥 Baixar Ficha de Captação",
-            data=buffer,
-            file_name=nome_arquivo,
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        )
-        
-    except Exception as e:
-        st.error(f"❌ Erro ao gerar a ficha: {str(e)}")
-        st.info("ℹ️ Verifique se o arquivo 'Ficha_de_captacao.docx' está na mesma pasta do aplicativo.")
+        return buffer
 
-# ----------------- Informações de uso -----------------
-with st.expander("ℹ️ Instruções de Uso"):
-    st.markdown("""
-    **Como usar este formulário:**
+    # ----------------- Botão gerar/download -----------------
+    st.markdown("---")
     
-    1. **Preencha os campos** que desejar (nenhum campo é obrigatório)
-    2. **Selecione as características** do imóvel marcando as checkboxes correspondentes
-    3. **Forneça os dados** do proprietário
-    4. **Clique em 'Gerar Ficha de Captação'** para criar o documento
-    5. **Baixe o arquivo** usando o botão que aparecerá após a geração
-    
-    **Observação:** 
-    - Todos os campos são opcionais
-    - O documento será gerado mesmo com campos em branco
-    - Campos vazios aparecerão como espaços em branco no documento final
-    """)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("📄 GERAR FICHA DE CAPTAÇÃO", use_container_width=True, type="primary"):
+            arquivo = gerar_ficha_streamlit()
+            if arquivo:
+                endereco_clean = enderecoImovel.replace(" ", "_") if enderecoImovel else "SemEndereco"
+                data_atual = datetime.now().strftime("%Y-%m-%d")
+                nome_arquivo = f"Ficha_Captacao_{endereco_clean}_{data_atual}.docx"
 
-st.markdown("---")
-st.markdown("**Villares Imóveis** - Sistema de Cadastro de Imóveis")
+                st.success("✅ Ficha gerada com sucesso!")
+                st.download_button(
+                    label="📥 BAIXAR FICHA DE CAPTAÇÃO",
+                    data=arquivo,
+                    file_name=nome_arquivo,
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    use_container_width=True
+                )
+    
+    st.markdown('</div>', unsafe_allow_html=True) 
+    
+if __name__ == "__main__":
+    app()
