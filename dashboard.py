@@ -117,23 +117,19 @@ def login():
         # Título compacto
         st.markdown("<h4 style='text-align: center; margin: 5px 0 10px 0; font-size: 28px;'>Sistema Villares Imóveis</h4>", unsafe_allow_html=True)
         
-        # CSS para o botão verde
+        # CSS apenas para o botão de login (mantém verde)
         st.markdown("""
             <style>
-                div[data-testid="stButton"] > button {
+                button[data-testid="baseButton-secondary"][kind="secondary"] {
                     background-color: #4CAF50 !important;
                     color: white !important;
-                    padding: 8px 20px !important;
                     border: none !important;
+                    padding: 8px 20px !important;
                     border-radius: 6px !important;
                     font-size: 14px !important;
                     font-weight: bold !important;
-                    display: block !important;
-                    margin: 10px auto !important;
-                    width: 40px auto !important;
-                    min-width: 120px !important;
                 }
-                div[data-testid="stButton"] > button:hover {
+                button[data-testid="baseButton-secondary"][kind="secondary"]:hover {
                     background-color: #45a049 !important;
                 }
             </style>
@@ -310,7 +306,7 @@ def dashboard():
         # Seção de Geradores de Documentos
         st.markdown('<div class="section-header"><h2>📄 GERADORES DE DOCUMENTOS</h2></div>', unsafe_allow_html=True)
         
-        # Grid de botões usando colunas
+        # Grid de botões
         col1, col2, col3 = st.columns(3)
 
         with col1:
