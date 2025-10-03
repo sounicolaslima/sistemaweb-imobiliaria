@@ -4,6 +4,7 @@ import os
 import json
 import requests
 from datetime import datetime
+import hashlib
 
 # ----------------- Configuração da página -----------------
 st.set_page_config(page_title="Dashboard Villares", layout="wide", initial_sidebar_state="collapsed")
@@ -17,6 +18,8 @@ if "pagina" not in st.session_state:
     st.session_state.pagina = "inicial"
 if "frase_do_dia" not in st.session_state:
     st.session_state.frase_do_dia = ""
+if "data_frase" not in st.session_state:
+    st.session_state.data_frase = ""
 
 # ----------------- Carregar usuários do JSON -----------------
 ARQUIVO_USUARIOS = "usuarios.json"
@@ -30,9 +33,17 @@ def carregar_usuarios():
 usuarios = carregar_usuarios()
 
 # ----------------- Função para buscar frase do dia -----------------
-def buscar_frase_do_dia():
+def buscar_frase_do_dia(usuario):
+    # Gera um ID único baseado no usuário + data atual
+    data_hoje = datetime.now().strftime("%Y%m%d")
+    seed = usuario + data_hoje
+    
+    # Cria um hash para gerar índice único
+    hash_obj = hashlib.md5(seed.encode())
+    hash_int = int(hash_obj.hexdigest(), 16)
+    
     try:
-        # API que retorna frases em português
+        # Tenta buscar da API
         response = requests.get("https://api.quotable.io/random", timeout=5)
         if response.status_code == 200:
             data = response.json()
@@ -43,15 +54,33 @@ def buscar_frase_do_dia():
     except:
         pass
     
-    # Fallback simples caso a API não funcione
+    # Fallback com frases em português
     frases_fallback = [
         "O sucesso é a soma de pequenos esforços repetidos dia após dia.",
+        "A persistência é o caminho do êxito.",
+        "Não espere por oportunidades, crie-as.",
+        "Cada cliente satisfeito é uma vitória conquistada.",
+        "A excelência não é um destino, é uma jornada constante.",
+        "Grandes resultados exigem grandes ambições.",
+        "Transforme desafios em degraus para o sucesso.",
+        "A consistência supera a intensidade todos os dias.",
+        "Seja a solução que seus clientes procuram.",
+        "Cada imóvel vendido é um sonho realizado.",
+        "A qualidade do seu trabalho revela o caráter do seu negócio.",
+        "Inove sempre, evolua constantemente.",
+        "O segredo do sucesso é a constância no propósito.",
+        "Faça hoje o que outros não fazem para ter amanhã o que outros não têm.",
+        "A disciplina é a ponte entre metas e realizações.",
+        "A excelência está nos detalhes bem executados.",
+        "Seja referência no que você faz.",
         "Acredite que você pode e você já está no meio do caminho.",
-        "Cada novo dia é uma nova oportunidade para mudar sua vida."
+        "Cada novo dia é uma nova oportunidade para mudar sua vida.",
+        "O trabalho duro supera o talento quando o talento não trabalha duro."
     ]
     
-    dia = datetime.now().day
-    return frases_fallback[dia % len(frases_fallback)]
+    # Usa o hash para escolher uma frase única para o usuário
+    indice = hash_int % len(frases_fallback)
+    return frases_fallback[indice]
 
 # ----------------- Função de Login -----------------
 def login():
@@ -63,7 +92,6 @@ def login():
             logo = Image.open("villares.png")
             col_img1, col_img2, col_img3 = st.columns([1, 2, 1])
             with col_img2:
-                # CSS que funciona em todos os navegadores
                 st.markdown("""
                     <style>
                     .logo-container {
@@ -127,10 +155,18 @@ def login():
                 if user in usuarios and usuarios[user] == pwd:
                     st.session_state.logged_in = True
                     st.session_state.usuario = user
+                    
+                    # Buscar frase do dia ao fazer login
+                    data_hoje = datetime.now().strftime("%Y%m%d")
+                    if st.session_state.data_frase != data_hoje:
+                        st.session_state.frase_do_dia = buscar_frase_do_dia(user)
+                        st.session_state.data_frase = data_hoje
+                    
                     st.success(f"Bem-vindo, {user}!")
                     st.rerun()
                 else:
                     st.error("Usuário ou senha incorretos")
+
 # ----------------- Função para mudar de página -----------------
 def mudar_pagina(pagina):
     st.session_state.pagina = pagina
@@ -251,6 +287,12 @@ def dashboard():
         </style>
     """, unsafe_allow_html=True)
     
+    # Verificar se precisa atualizar a frase (mudou o dia)
+    data_hoje = datetime.now().strftime("%Y%m%d")
+    if st.session_state.data_frase != data_hoje:
+        st.session_state.frase_do_dia = buscar_frase_do_dia(st.session_state.usuario)
+        st.session_state.data_frase = data_hoje
+    
     # Sidebar com usuário logado e frase do dia
     with st.sidebar:
         # Informações do usuário
@@ -258,7 +300,7 @@ def dashboard():
         st.markdown(f"👤 **Usuário:** {st.session_state.usuario}")
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Frase do dia
+        # Frase do dia (sempre atualizada)
         if st.session_state.frase_do_dia:
             st.markdown('<div class="frase-container">', unsafe_allow_html=True)
             st.markdown('<div class="frase-titulo">💫 FRASE DO DIA</div>', unsafe_allow_html=True)
@@ -266,16 +308,12 @@ def dashboard():
             st.markdown(f'<div class="data-atual">{datetime.now().strftime("%d/%m/%Y")}</div>', unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
         
-        # Botão para atualizar frase
-        if st.button("🔄 Nova Frase", use_container_width=True):
-            st.session_state.frase_do_dia = buscar_frase_do_dia()
-            st.rerun()
-        
         # Botão sair
         if st.button("🚪 Sair do Sistema", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.usuario = None
             st.session_state.frase_do_dia = ""
+            st.session_state.data_frase = ""
             st.rerun()
         
         st.markdown("---")

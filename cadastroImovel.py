@@ -4,175 +4,184 @@ import os
 from datetime import datetime
 from io import BytesIO
 
-# ----------------- Caminhos relativos -----------------
-base_dir = os.path.dirname(__file__)  # pasta do script
-CAMINHO_DOCX = os.path.join(base_dir, "Ficha_de_captacao.docx")  # template
+# ----------------- Caminhos dos templates -----------------
+base_dir = os.path.dirname(__file__)
+TEMPLATE_UNICO = os.path.join(base_dir, "recibo_unico.docx")
+TEMPLATE_DUPLO = os.path.join(base_dir, "recibo_duplo.docx")
 
-def gerar_ficha(dados):
+def gerar_recibos(recibos):
+    """Gera documento com recibos usando templates apropriados"""
     try:
-        if not os.path.exists(CAMINHO_DOCX):
-            st.error(f"Arquivo {CAMINHO_DOCX} não encontrado.")
-            return
+        # Verificar templates
+        if not os.path.exists(TEMPLATE_UNICO):
+            st.error(f"Template {TEMPLATE_UNICO} não encontrado.")
+            return None
+        if not os.path.exists(TEMPLATE_DUPLO):
+            st.error(f"Template {TEMPLATE_DUPLO} não encontrado.")
+            return None
 
-        doc = DocxTemplate(CAMINHO_DOCX)
-        doc.render(dados)
+        # Para um único recibo
+        if len(recibos) == 1:
+            doc = DocxTemplate(TEMPLATE_UNICO)
+            dados = {**recibos[0], 'valorTotal': calcular_total(recibos[0])}
+            doc.render(dados)
+        else:
+            # Para múltiplos recibos - usar template duplo
+            doc = DocxTemplate(TEMPLATE_DUPLO)
+            dados_template = {}
+            
+            # Processar cada recibo
+            for i, recibo in enumerate(recibos[:2]):  # Máximo 2 por página
+                sufixo = "" if i == 0 else "2"
+                for key, value in recibo.items():
+                    dados_template[f"{key}{sufixo}"] = value
+                dados_template[f"valorTotal{sufixo}"] = calcular_total(recibo)
+            
+            doc.render(dados_template)
 
-        endereco = dados.get("enderecoImovel", "SemEndereco").strip().replace(" ", "_")
-        data_atual = datetime.today().strftime("%Y-%m-%d")
-        nome_arquivo = f"Ficha_{endereco}_{data_atual}.docx"
-
-        # 🔹 salvar apenas em memória
+        # Salvar em memória
         buffer = BytesIO()
         doc.save(buffer)
         buffer.seek(0)
+        
+        return buffer
 
-        st.success("✅ Ficha gerada com sucesso!")
-        st.download_button(
-            label="📥 Baixar Ficha de Captação",
-            data=buffer,
-            file_name=nome_arquivo,
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            key="download_ficha_captacao"
-        )
     except Exception as e:
-        st.error(f"Erro ao gerar ficha: {e}")
+        st.error(f"Erro ao gerar recibos: {e}")
+        return None
+
+def calcular_total(recibo):
+    """Calcula o total do recibo"""
+    try:
+        total = (float(recibo.get('valorAluguel', '0').replace(',', '.')) +
+                float(recibo.get('valorAgua', '0').replace(',', '.')) +
+                float(recibo.get('valorLuz', '0').replace(',', '.')) +
+                float(recibo.get('valorIPTU', '0').replace(',', '.')) +
+                float(recibo.get('valorCondominio', '0').replace(',', '.')) +
+                float(recibo.get('valorMulta', '0').replace(',', '.')) -
+                float(recibo.get('desconto', '0').replace(',', '.')))
+        return f"{total:,.2f}".replace('.', 'X').replace(',', '.').replace('X', ',')
+    except:
+        return '0,00'
 
 def app():
-    st.set_page_config(page_title="Ficha de Captação", layout="centered")
+    st.set_page_config(page_title="Recibo de Aluguel", page_icon="🏠", layout="centered")
     
-    # CSS para centralizar e estilizar
-    st.markdown("""
-        <style>
-            .main-container {
-                max-width: 900px;
-                margin: 0 auto;
-                padding: 20px;
-            }
-            .section-header {
-                text-align: center;
-                margin: 25px 0 15px 0;
-                padding: 12px;
-                background-color: #f0f2f6;
-                border-radius: 8px;
-                border-left: 4px solid #4CAF50;
-            }
-            .stButton button {
-                width: 100%;
-            }
-            .warning-box {
-                background-color: #fff3cd;
-                border: 1px solid #ffeaa7;
-                border-radius: 8px;
-                padding: 15px;
-                margin: 15px 0;
-            }
-            .section-container {
-                margin: 20px 0;
-                padding: 15px;
-                border: 1px solid #e0e0e0;
-                border-radius: 8px;
-                background-color: #fafafa;
-            }
-        </style>
-    """, unsafe_allow_html=True)
+    st.title("📄 Recibo de Aluguel - Villares Imóveis")
+
+    # Inicializar lista de recibos
+    if 'recibos' not in st.session_state:
+        st.session_state.recibos = []
+
+    # Verificação dos templates
+    templates_ok = True
+    if not os.path.exists(TEMPLATE_UNICO):
+        st.error(f"❌ {TEMPLATE_UNICO} não encontrado")
+        templates_ok = False
+    if not os.path.exists(TEMPLATE_DUPLO):
+        st.error(f"❌ {TEMPLATE_DUPLO} não encontrado")
+        templates_ok = False
     
-    st.markdown('<div class="main-container">', unsafe_allow_html=True)
-    
-    st.title("🏠 FICHA DE CAPTAÇÃO")
+    if templates_ok:
+        st.success("✅ Templates encontrados!")
 
-    # Verificação do template
-    if not os.path.exists(CAMINHO_DOCX):
-        st.markdown(f"""
-        <div class="warning-box">
-            <h3>⚠️ Template Não Encontrado</h3>
-            <p>O arquivo <strong>{CAMINHO_DOCX}</strong> não foi encontrado.</p>
-            <p><strong>Por favor verifique:</strong></p>
-            <ol>
-                <li>Se o arquivo <strong>'Ficha_de_captacao.docx'</strong> está na mesma pasta do script</li>
-                <li>O nome exato do arquivo (incluindo letras maiúsculas/minúsculas)</li>
-            </ol>
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.success(f"✅ Template encontrado: {CAMINHO_DOCX}")
+    # Formulário principal
+    with st.form("recibo_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            nomeLocatario = st.text_input("Locatário(a):")
+            enderecoImovel = st.text_input("Endereço do Imóvel:")
+            inicioPeriodo = st.text_input("Período de:")
+            finalPeriodo = st.text_input("Até:")
+            vencimento = st.text_input("Vencimento:")
+            limitePagamento = st.text_input("Limite Pagamento:")
+        
+        with col2:
+            valorAluguel = st.text_input("Valor Aluguel:", value="0,00")
+            valorAgua = st.text_input("Valor Água:", value="0,00")
+            valorLuz = st.text_input("Valor Luz:", value="0,00")
+            valorIPTU = st.text_input("Valor IPTU:", value="0,00")
+            valorCondominio = st.text_input("Valor Condomínio:", value="0,00")
+            valorMulta = st.text_input("Valor Multa:", value="0,00")
+            desconto = st.text_input("Desconto:", value="0,00")
+            data = st.text_input("Data:", value=datetime.now().strftime('%d/%m/%Y'))
+        
+        submitted = st.form_submit_button("➕ Adicionar Recibo")
 
-    secoes = {
-        "💰 VALOR / TIPO DE NEGÓCIO": [
-            ("valor","text","Valor (R$)"), ("aluguel","checkbox","Aluguel"), ("venda","checkbox","Venda")
-        ],
-        "🏘️ TIPO DE IMÓVEL": [
-            ("casa","checkbox","Casa"), ("Apto","checkbox","Apto"), ("Sitio","checkbox","Sítio"),
-            ("lotes","checkbox","Lotes"), ("outros","checkbox","Outros")
-        ],
-        "📋 DADOS DO IMÓVEL": [
-            ("enderecoImovel","text","Endereço"), ("nImovel","text","Nº"), ("compl","text","Compl"),
-            ("bairroImovel","text","Bairro"), ("cidadeImovel","text","Cidade"), ("UFImovel","text","UF"),
-            ("quartoImovel","text","Quarto"), ("suiteImovel","text","Suíte"), ("cozinhImovel","text","Cozinha"),
-            ("ATImovel","text","Área Total (ÁT)"), ("salaImovel","text","Sala"), ("copaImovel","text","Copa"),
-            ("banheiroImovel","text","Banheiro"), ("ACImovel","text","Área Construída (ÁC)"),
-            ("Quintal","text","Quintal"), ("GaragemImovel","text","Garagem"), ("areaServImovel","text","Área de Serviço"),
-            ("revestimento","text","Revestimento"), ("esquadrilha","text","Esquadrilha"), ("piso","text","Piso"),
-            ("situacao","text","Situação"), ("visitas","text","Visitas"), ("divulgacao","text","Divulgação"),
-            ("IPTU","text","IPTU"), ("localizacao","text","Referência/Localização"), ("observacoes","text","Observações")
-        ],
-        "⭐ CARACTERÍSTICAS / INFRAESTRUTURA": [
-            ("interfone","checkbox","Interfone"), ("areaPriv","checkbox","Área Privativa"), ("CHURRASQUEIRA","checkbox","Churrasqueira"),
-            ("sala_de_jogos","checkbox","Salão de Jogos"), ("lavabo","checkbox","Lavabo"), ("ArmQuarto","checkbox","Arm. Quartos"),
-            ("AQsOLAR","checkbox","Aquec. Solar"), ("salaoFests","checkbox","Salão de Festas"), ("despensa","checkbox","Despensa"),
-            ("armCozinha","checkbox","Arm. Cozinha"), ("Aqgas","checkbox","Aquec. Gás"), ("numerodepavimentos","checkbox","N° Pavimentos"),
-            ("DCE","checkbox","DCE"), ("boxBanehir","checkbox","Box Banheiro"), ("aquec.eletrico","checkbox","Aquec. Elétrico"),
-            ("numeroapto","checkbox","N° Apto/Andar"), ("varanda","checkbox","Varanda"), ("areaLazer","checkbox","Área de Lazer"),
-            ("porteiroFísico","checkbox","Porteiro Físico"), ("garagem","checkbox","Garagem L/I"), ("rouparia","checkbox","Rouparia"),
-            ("closet","checkbox","Closet"), ("sauna","checkbox","Sauna"), ("nelevador","checkbox","N° Elevador"), ("box","checkbox","Box Despejo"),
-            ("salaGinastica","checkbox","Sala Ginástica"), ("piscina","checkbox","Piscina"), ("escritorio","checkbox","Escritório"),
-            ("AREACLARIDAD","checkbox","Área Claridade"), ("playground","checkbox","Playground"), ("salaTV","checkbox","Sala de TV"),
-            ("SACADA","checkbox","Sacada"), ("quadra","checkbox","Quadra de Esporte"), ("topografia","checkbox","Topografia")
-        ],
-        "👤 DADOS DO PROPRIETÁRIO": [
-            ("nomeProprietario","text","Nome"), ("ederecoProprietario","text","Endereço"), ("numeroProprietario","text","Nº"),
-            ("CompleProprietario","text","Compl"), ("bairroProprietario","text","Bairro"), ("cidadeProprietario","text","Cidade"),
-            ("UFPropritario","text","UF"), ("CpfProprietario","text","CPF"), ("RGProprietario","text","RG"),
-            ("emailProprietario","text","E-mail"), ("telefoneProprietario","text","Tel. Fixo"),
-            ("celularProprietario","text","Celular"), ("nomeCaptador","text","Captador"),
-            ("dia","text","Dia"), ("mes","text","Mês"), ("ano","text","Ano")
-        ],
-        "🔑 SITUAÇÃO DAS CHAVES": [
-            ("copiaVillares","checkbox","Cópia Villares"), ("copiaProprietario","checkbox","Cópia Proprietário")
-        ]
-    }
+        if submitted and templates_ok:
+            recibo = {
+                'nomeLocatario': nomeLocatario,
+                'enderecoImovel': enderecoImovel,
+                'inicioPeriodo': inicioPeriodo,
+                'finalPeriodo': finalPeriodo,
+                'vencimento': vencimento,
+                'limitePagamento': limitePagamento,
+                'valorAluguel': valorAluguel,
+                'valorAgua': valorAgua,
+                'valorLuz': valorLuz,
+                'valorIPTU': valorIPTU,
+                'valorCondominio': valorCondominio,
+                'valorMulta': valorMulta,
+                'desconto': desconto,
+                'data': data
+            }
+            st.session_state.recibos.append(recibo)
+            st.success(f"Recibo adicionado! Total: {len(st.session_state.recibos)}")
 
-    dados_ficha = {}
-    
-    # Renderizar todas as seções fixas (sem expanders)
-    for secao, campos in secoes.items():
-        st.markdown(f'<div class="section-header"><h3>{secao}</h3></div>', unsafe_allow_html=True)
+    # Lista de recibos
+    if st.session_state.recibos:
+        st.subheader(f"📋 Recibos Adicionados ({len(st.session_state.recibos)})")
         
-        st.markdown('<div class="section-container">', unsafe_allow_html=True)
-        
-        col_count = 3
-        cols = st.columns(col_count)
-        col_index = 0
-        
-        for campo, tipo, label in campos:
-            key_name = campo + "_captacao"
-            if tipo == "text":
-                dados_ficha[campo] = st.text_input(label, key=key_name, placeholder=f"Digite {label.lower()}")
-            elif tipo == "checkbox":
-                dados_ficha[campo] = "✓" if cols[col_index].checkbox(label, key=key_name) else ""
-                col_index = (col_index + 1) % col_count
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+        for i, recibo in enumerate(st.session_state.recibos):
+            with st.expander(f"Recibo {i+1} - {recibo.get('nomeLocatario', 'Sem nome')}"):
+                st.write(f"**Endereço:** {recibo.get('enderecoImovel', 'Não informado')}")
+                st.write(f"**Período:** {recibo.get('inicioPeriodo', '')} a {recibo.get('finalPeriodo', '')}")
+                st.write(f"**Total:** R$ {calcular_total(recibo)}")
+                
+                if st.button(f"🗑️ Remover Recibo {i+1}", key=f"remove_{i}"):
+                    st.session_state.recibos.pop(i)
+                    st.rerun()
 
-    # ----------------- Botão Gerar Documento -----------------
+        # Botão de geração
+        st.markdown("---")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if st.button("🔄 Gerar Documento", type="primary", use_container_width=True):
+                with st.spinner("Gerando recibos..."):
+                    buffer = gerar_recibos(st.session_state.recibos)
+                    
+                    if buffer:
+                        st.success("✅ Documento gerado com sucesso!")
+                        
+                        nome_arquivo = f"recibos_{datetime.now().strftime('%Y%m%d_%H%M')}.docx"
+                        
+                        st.download_button(
+                            label="📥 Baixar Recibos",
+                            data=buffer,
+                            file_name=nome_arquivo,
+                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            type="primary"
+                        )
+        
+        with col2:
+            if st.button("🗑️ Limpar Tudo", use_container_width=True):
+                st.session_state.recibos = []
+                st.rerun()
+
+    # Instruções
     st.markdown("---")
-    
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("📄 GERAR FICHA DE CAPTAÇÃO", use_container_width=True, type="primary", key="gerar_ficha_captacao"):
-            gerar_ficha(dados_ficha)
-    
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.info("""
+    💡 **Como usar:**
+    1. Preencha os dados do recibo
+    2. Clique em **Adicionar Recibo** para incluir na lista
+    3. Repita para adicionar mais recibos (máximo 2 por documento)
+    4. Clique em **Gerar Documento** para criar o arquivo Word
+    5. **Layout automático:**
+       - 1 recibo → Template único
+       - 2 recibos → Template duplo (2 por página)
+    """)
 
-# Adicione estas linhas no final do arquivo:
 if __name__ == "__main__":
     app()

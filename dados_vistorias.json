@@ -70,5 +70,338 @@
                 ]
             }
         ]
+    },
+    "12345678": {
+        "CPFLocatario": "12345678",
+        "nomeLocatario": "",
+        "RG": "",
+        "endereco": "",
+        "celular": "",
+        "email": "",
+        "enderecoImovel": "",
+        "dataContrato": "",
+        "dataVistoria": "",
+        "nomeVistoriador": "",
+        "dia": "",
+        "mes": "",
+        "ano": "",
+        "TESTEMUNHA1": "",
+        "CPFTestemunha1": "",
+        "TESTEMUNHA2": "",
+        "CPFTestemunha2": "",
+        "fiadores": [
+            {
+                "nome": "er",
+                "cpf": "wer",
+                "rg": "ewrw",
+                "endereco": "ewr",
+                "telefone": "ewr"
+            },
+            {
+                "nome": "esffge",
+                "cpf": "ew",
+                "rg": "ew",
+                "endereco": "ewtw",
+                "telefone": "efw"
+            }
+        ],
+        "comodos": [
+            {
+                "nome": "Sala",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": "wer"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": "wqr"
+                    },
+                    {
+                        "nome": "Tomada",
+                        "estado": "Bom",
+                        "descricao": "wr"
+                    },
+                    {
+                        "nome": "Nova Característica",
+                        "estado": "Bom",
+                        "descricao": "wqerqw"
+                    },
+                    {
+                        "nome": "Nova Característica",
+                        "estado": "Bom",
+                        "descricao": ""
+                    }
+                ]
+            },
+            {
+                "nome": "cozinha",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": "wqrwq"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": "rqwq"
+                    },
+                    {
+                        "nome": "Nova Característica",
+                        "estado": "Bom",
+                        "descricao": "qwrwq"
+                    }
+                ]
+            }
+        ]
+    },
+    "sfawrar": {
+        "nomeLocatario": "wrwqr",
+        "RG": "",
+        "CPFLocatario": "sfawrar",
+        "endereco": "",
+        "celular": "",
+        "email": "",
+        "enderecoImovel": "",
+        "dataContrato": "wqrqw",
+        "dataVistoria": "",
+        "nomeVistoriador": "",
+        "dia": "",
+        "mes": "",
+        "ano": "",
+        "TESTEMUNHA1": "wqrqw",
+        "CPFTestemunha1": "qwrqw",
+        "TESTEMUNHA2": "qwe",
+        "CPFTestemunha2": "",
+        "fiadores": [
+            {
+                "nome": "qwrqr",
+                "cpf": "",
+                "rg": "",
+                "endereco": "",
+                "telefone": ""
+            },
+            {
+                "nome": "qrq",
+                "cpf": "qwr",
+                "rg": "qwr",
+                "endereco": "wqr",
+                "telefone": "qw"
+            }
+        ],
+        "comodos": [
+            {
+                "nome": "Sala",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": "qweqw"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": "wrq"
+                    },
+                    {
+                        "nome": "Tomada",
+                        "estado": "Bom",
+                        "descricao": ""
+                    }
+                ]
+            },
+            {
+                "nome": "Cômodo 2",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": "rwqr"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": "awrwr"
+                    }
+                ]
+            }
+        ]
+    },
+    "sadfsa": {
+        "nomeLocatario": "dadad",
+        "RG": "adasd",
+        "CPFLocatario": "sadfsa",
+        "endereco": "safsaf",
+        "celular": "sasafas",
+        "email": "sfsafdas",
+        "enderecoImovel": "",
+        "dataContrato": "",
+        "dataVistoria": "",
+        "nomeVistoriador": "",
+        "dia": "",
+        "mes": "",
+        "ano": "",
+        "TESTEMUNHA1": "",
+        "CPFTestemunha1": "",
+        "TESTEMUNHA2": "",
+        "CPFTestemunha2": "",
+        "fiadores": [
+            {
+                "nome": "fsafsaf",
+                "cpf": "asfasf",
+                "rg": "sfafs",
+                "endereco": "asfas",
+                "telefone": "safasf"
+            },
+            {
+                "nome": "",
+                "cpf": "",
+                "rg": "",
+                "endereco": "",
+                "telefone": ""
+            }
+        ],
+        "comodos": [
+            {
+                "nome": "Sala",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": "safasfas"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": "asfas"
+                    },
+                    {
+                        "nome": "Tomada",
+                        "estado": "Bom",
+                        "descricao": "as"
+                    },
+                    {
+                        "nome": "Nova Característica",
+                        "estado": "Bom",
+                        "descricao": "asdasd"
+                    }
+                ]
+            },
+            {
+                "nome": "Cômodo 2",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": "asfas"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": "asfa"
+                    }
+                ]
+            }
+        ]
+    },
+    "asda": {
+        "nomeLocatario": "sdds",
+        "RG": "afasf",
+        "CPFLocatario": "asda",
+        "endereco": "asdd",
+        "celular": "aDSa",
+        "email": "A",
+        "enderecoImovel": "ASS",
+        "dataContrato": "DSDAS",
+        "dataVistoria": "SADAS",
+        "nomeVistoriador": "ASDA",
+        "dia": "ASDASD",
+        "mes": "SDASD",
+        "ano": "SAD",
+        "TESTEMUNHA1": "SADD",
+        "CPFTestemunha1": "ASDAS",
+        "TESTEMUNHA2": "ASDAS",
+        "CPFTestemunha2": "ASD",
+        "fiadores": [
+            {
+                "nome": "ASDSA",
+                "cpf": "AD",
+                "rg": "ASD",
+                "endereco": "ASDAS",
+                "telefone": ""
+            },
+            {
+                "nome": "",
+                "cpf": "SAD",
+                "rg": "",
+                "endereco": "ASDA",
+                "telefone": ""
+            }
+        ],
+        "comodos": [
+            {
+                "nome": "Sala",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": "ASDAS"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": "SADASD"
+                    },
+                    {
+                        "nome": "Tomada",
+                        "estado": "Bom",
+                        "descricao": "ASDS"
+                    },
+                    {
+                        "nome": "Nova Característica",
+                        "estado": "Bom",
+                        "descricao": "SADA"
+                    }
+                ]
+            },
+            {
+                "nome": "Cômodo 2",
+                "caracteristicas": [
+                    {
+                        "nome": "Piso",
+                        "estado": "Bom",
+                        "descricao": "SADAS"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": "ASDAS"
+                    },
+                    {
+                        "nome": "Nova Característica",
+                        "estado": "Bom",
+                        "descricao": ""
+                    }
+                ]
+            },
+            {
+                "nome": "COZINHA",
+                "caracteristicas": [
+                    {
+                        "nome": "PisoDSADAS",
+                        "estado": "Bom",
+                        "descricao": "ASDAS"
+                    },
+                    {
+                        "nome": "Parede",
+                        "estado": "Bom",
+                        "descricao": ""
+                    }
+                ]
+            }
+        ]
     }
 }
