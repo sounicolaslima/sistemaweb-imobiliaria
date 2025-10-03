@@ -16,6 +16,7 @@ Sistema completo de gestão imobiliária desenvolvido em Streamlit para automaç
 | **💰 Recibo de Aluguel** | Emissão de recibos individuais |
 | **📊 Recibos Múltiplos** | Sistema de recibos em lote (até 2 por página) |
 
+
 ### ✨ Características Técnicas
 
 - **🖥️ Interface Moderna**: Dashboard responsivo com design profissional
@@ -27,6 +28,7 @@ Sistema completo de gestão imobiliária desenvolvido em Streamlit para automaç
 - **🧮 Cálculos Automáticos**: Totais, valores e períodos automáticos
 - **📱 Design Responsivo**: CSS personalizado para melhor experiência
 
+
 ## 🛠️ Tecnologias Utilizadas
 
 - **Python 3.8+**
@@ -35,6 +37,7 @@ Sistema completo de gestão imobiliária desenvolvido em Streamlit para automaç
 - **PIL (Pillow)** - Manipulação de imagens
 - **JSON** - Armazenamento de dados
 - **Requests** - Integração com APIs
+
 
 ## 📦 Instalação
 
@@ -48,97 +51,98 @@ Sistema completo de gestão imobiliária desenvolvido em Streamlit para automaç
 ```bash
 git clone https://github.com/seu-usuario/villares-sistema.git
 cd villares-sistema
-Crie um ambiente virtual (recomendado)
+```
 
-bash
+2. **Crie um ambiente virtual**
+```bash
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # ou
 venv\Scripts\activate  # Windows
-Instale as dependências
+```
 
-bash
+3. **Instale as dependências**
+```bash
 pip install -r requirements.txt
-Execute o sistema
+```
 
-bash
+4. **Execute o sistema**
+```bash
 streamlit run dashboard.py
-📁 Estrutura do Projeto
-text
+```
+
+
+## 📁 Estrutura do Projeto
+```text
 villares-sistema/
 ├── 📄 dashboard.py              # Sistema principal
 ├── 📋 fichaCadastral.py         # Ficha cadastral
 ├── 📑 contrato.py               # Contrato de locação
 ├── 🏢 contratoAdministracao.py  # Contrato administrativo
 ├── 🔍 termo_vistoria.py         # Termo de vistoria
-├── 💰 recibo.py                 # Recibo individual
-├── 📊 recibo_multiplo.py        # Recibos em lote
+├── 💰 recibo.py                 # Recibo 
+├── 📊 cadastroImovel.py         # Recibos em lote
 ├── 📁 templates/                # Templates Word
 │   ├── fichaCadastral.docx
 │   ├── contrato.docx
 │   ├── contrato_administracao.docx
 │   ├── termo_vistoria.docx
 │   ├── recibo.docx
-│   ├── recibo_unico.docx
-│   └── recibo_duplo.docx
+│   ├── vistoria_corrigido_dinamico.docx
+│   └── Ficha_de_captacao.docx
 ├── 🗃️ dados.json                # Dados dos clientes
-├── 🗃️ dados_vistorias.json     # Dados de vistorias
+├── 🗃️ dados_vistorias.json      # Dados de vistorias
 ├── 👥 usuarios.json             # Usuários do sistema
 ├── 🖼️ villares.png              # Logo da empresa
 └── 📋 requirements.txt          # Dependências do projeto
-🎯 Como Usar
-Primeiro Acesso
-Execute streamlit run dashboard.py
+```
 
-Faça login com usuário e senha
+## 🎯 Como Usar
 
-Navegue pelos módulos através do dashboard
+### Primeiro Acesso
+1) Execute streamlit run dashboard.py
+2) Faça login com usuário e senha
+3) Navegue pelos módulos através do dashboard
 
-Trabalhando com Documentos
-Busque por CPF para carregar dados existentes
+### Trabalhando com Documentos
+1) Busque por CPF para carregar dados existentes
+2) Preencha os formulários com as informações necessárias
+3) Visualize os dados antes de gerar o documento
+3) Gere e baixe o documento Word (docx) finalizado
 
-Preencha os formulários com as informações necessárias
+### Templates Personalizáveis
+1) Todos os templates Word estão na pasta templates/
+2) Personalize os layouts conforme necessidade da imobiliária
+3) Mantenha as variáveis Jinja2 ({{ variavel }}) para funcionamento correto
 
-Visualize os dados antes de gerar o documento
+## 🔧 Configuração
 
-Gere e baixe o documento Word finalizado
-
-Templates Personalizáveis
-Todos os templates Word estão na pasta templates/
-
-Personalize os layouts conforme necessidade da imobiliária
-
-Mantenha as variáveis Jinja2 ({{ variavel }}) para funcionamento correto
-
-🔧 Configuração
-Adicionando Usuários
+### Adicionando Usuários
 Edite o arquivo usuarios.json para adicionar novos usuários:
 
-json
+```json
 {
   "usuario": "senha",
   "admin": "123456"
 }
-Personalizando Templates
-Os templates usam sintaxe Jinja2 para variáveis
+```
 
-Mantenha a estrutura de tabelas e formatação
+### Personalizando Templates
+1) Os templates usam sintaxe Jinja2 para variáveis
+2) Mantenha a estrutura de tabelas e formatação
+3) Teste sempre após modificações
 
-Teste sempre após modificações
 
-📞 Suporte
-Em caso de dúvidas ou problemas:
+## 📞 Suporte -Em caso de dúvidas ou problemas:
 
-Verifique se todas as dependências estão instaladas
+1)Verifique se todas as dependências estão instaladas
+2)Confirme que os templates Word estão na pasta correta
+3)Valide o formato dos arquivos JSON
 
-Confirme que os templates Word estão na pasta correta
-
-Valide o formato dos arquivos JSON
-
-📄 Licença
+## 📄 Licença
 Este projeto é de uso interno da Villares Imobiliária.
 
-👨‍💻 Desenvolvido por
+## 👨‍💻 Desenvolvido por
 Nícolas Lima
 
 Sistema desenvolvido para otimizar os processos documentais da Villares Imobiliária.
