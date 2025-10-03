@@ -173,6 +173,9 @@ def mudar_pagina(pagina):
 
 # ----------------- Dashboard -----------------
 def dashboard():
+    from theme import apply_theme
+    apply_theme()
+
     # CSS para o dashboard
     st.markdown("""
         <style>
