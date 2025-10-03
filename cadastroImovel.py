@@ -187,7 +187,7 @@ def app():
        - 1 recibo → Template único
        - 2 recibos → Template duplo (2 por página)
     """)
-st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     app()

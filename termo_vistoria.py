@@ -28,33 +28,6 @@ def app():
 
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
-    # CSS para centralizar e estilizar
-    st.markdown("""
-        <style>
-            .main-container {
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
-            }
-            .section-header {
-                text-align: center;
-                margin: 25px 0 15px 0;
-                padding: 10px;
-                background-color: #f0f2f6;
-                border-radius: 8px;
-            }
-            .comodo-container {
-                background-color: #f8f9fa;
-                padding: 15px;
-                border-radius: 8px;
-                margin: 10px 0;
-                border-left: 4px solid #4CAF50;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-    
-    st.markdown('<div class="main-container">', unsafe_allow_html=True)
-    
     # Inicializar session states
     if "fiadores" not in st.session_state:
         st.session_state.fiadores = [{"nome": "", "cpf": "", "rg": "", "endereco": "", "telefone": ""}]

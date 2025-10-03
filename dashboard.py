@@ -84,6 +84,9 @@ def buscar_frase_do_dia(usuario):
 
 # ----------------- Função de Login -----------------
 def login():
+    from theme import apply_theme
+    apply_theme()
+    
     col_left, col_center, col_right = st.columns([1, 3, 1])
 
     with col_center:
@@ -175,117 +178,82 @@ def mudar_pagina(pagina):
 def dashboard():
     from theme import apply_theme
     apply_theme()
-
-    # CSS para o dashboard
+    
+    # CSS específico para o dashboard (complementar ao theme.py)
     st.markdown("""
         <style>
-            .main-dashboard-container {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 20px;
+            .dashboard-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                margin: 20px 0;
             }
-            .section-header {
-                text-align: center;
-                margin: 30px 0 20px 0;
-                padding: 15px;
-                background-color: #f0f2f6;
-                border-radius: 10px;
-                border-left: 5px solid #4CAF50;
-            }
-            .card-button {
-                background-color: white;
-                border: 2px solid #e0e0e0;
-                border-radius: 10px;
-                padding: 25px 15px;
-                text-align: center;
-                transition: all 0.3s ease;
-                cursor: pointer;
-                height: 120px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-            .card-button:hover {
-                border-color: #4CAF50;
-                transform: translateY(-3px);
-                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-            }
+            
             .card-icon {
                 font-size: 32px;
                 margin-bottom: 10px;
             }
+            
             .card-title {
                 font-weight: 600;
                 font-size: 14px;
-                color: #333;
+                color: var(--text-color);
             }
-            .planilha-button {
-                background-color: white;
-                border: 2px solid #e0e0e0;
-                border-radius: 10px;
-                padding: 25px 15px;
-                text-align: center;
-                transition: all 0.3s ease;
-                cursor: pointer;
-                height: 120px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                text-decoration: none;
-                color: #333 !important;
-            }
-            .planilha-button:hover {
-                border-color: #4CAF50;
-                transform: translateY(-3px);
-                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-                text-decoration: none;
-                color: #333 !important;
-            }
+            
             .planilha-title {
                 font-weight: 600;
                 font-size: 16px !important;
-                color: #333;
+                color: var(--text-color);
                 margin-bottom: 8px;
             }
+            
             .planilha-desc {
                 font-size: 13px !important;
-                color: #666;
+                color: var(--text-color);
+                opacity: 0.8;
                 line-height: 1.3;
             }
+            
             .user-info {
-                background-color: #f8f9fa;
+                background-color: var(--secondary-bg);
                 padding: 15px;
                 border-radius: 8px;
-                border-left: 4px solid #4CAF50;
+                border-left: 4px solid var(--accent-color);
                 margin-bottom: 15px;
+                color: var(--text-color);
             }
+            
             .frase-container {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
+                color: white !important;
                 padding: 20px;
                 border-radius: 10px;
                 margin: 15px 0;
                 text-align: center;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             }
+            
             .frase-titulo {
                 font-size: 14px;
                 font-weight: bold;
                 margin-bottom: 8px;
                 opacity: 0.9;
+                color: white !important;
             }
+            
             .frase-texto {
                 font-size: 13px;
                 font-style: italic;
                 line-height: 1.4;
                 margin: 0;
+                color: white !important;
             }
+            
             .data-atual {
                 font-size: 12px;
                 opacity: 0.8;
                 margin-top: 8px;
+                color: white !important;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -334,15 +302,15 @@ def dashboard():
                 logo = Image.open("villares.png")
                 st.image(logo, width=300)
         with col_title:
-            st.markdown("<h1 style='margin-top:20px; color:white; font-weight:bold;'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
-            st.markdown("<h3 style='color:white;'>Villares Imobiliária</h3>", unsafe_allow_html=True)
+            st.markdown("<h1 style='margin-top:20px;'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
+            st.markdown("### Villares Imobiliária", unsafe_allow_html=True)
 
         st.markdown("---")
         
         # Seção de Geradores de Documentos
         st.markdown('<div class="section-header"><h2>📄 GERADORES DE DOCUMENTOS</h2></div>', unsafe_allow_html=True)
         
-        # Grid de botões
+        # Grid de botões usando colunas
         col1, col2, col3 = st.columns(3)
 
         with col1:
@@ -406,38 +374,44 @@ def dashboard():
         
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Chamando scripts
+    # Chamando scripts das páginas
     else:
+        st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
         
         col_back, col_title = st.columns([1, 4])
         with col_back:
             if st.button("⬅️ VOLTAR", use_container_width=True):
                 mudar_pagina("inicial")
         with col_title:
-            st.markdown(f"<h2 style='color:white; font-weight:bold;'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
-            
+            st.markdown(f"<h2>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
+        
         st.markdown("---")
 
-        if st.session_state.pagina == "ficha_cadastral":
-            import fichaCadastral
-            fichaCadastral.app()
-        elif st.session_state.pagina == "contrato_administrativo":
-            import contratoAdministracao
-            contratoAdministracao.app()
-        elif st.session_state.pagina == "contrato":
-            import contrato
-            contrato.app()
-        elif st.session_state.pagina == "ficha_captacao":
-            import cadastroImovel
-            cadastroImovel.app()
-        elif st.session_state.pagina == "termo_vistoria":
-            import termo_vistoria
-            termo_vistoria.app()
-        elif st.session_state.pagina == "recibo":
-            import recibo
-            recibo.app()
+        # Importação dinâmica das páginas
+        try:
+            if st.session_state.pagina == "ficha_cadastral":
+                import fichaCadastral
+                fichaCadastral.app()
+            elif st.session_state.pagina == "contrato_administrativo":
+                import contratoAdministracao
+                contratoAdministracao.app()
+            elif st.session_state.pagina == "contrato":
+                import contrato
+                contrato.app()
+            elif st.session_state.pagina == "ficha_captacao":
+                import cadastroImovel
+                cadastroImovel.app()
+            elif st.session_state.pagina == "termo_vistoria":
+                import termo_vistoria
+                termo_vistoria.app()
+            elif st.session_state.pagina == "recibo":
+                import recibo
+                recibo.app()
+        except Exception as e:
+            st.error(f"Erro ao carregar a página: {e}")
+            st.info("Tente voltar para a página inicial e acessar novamente.")
         
-
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:
