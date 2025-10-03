@@ -84,7 +84,6 @@ def buscar_frase_do_dia(usuario):
 
 # ----------------- Função de Login -----------------
 def login():
-
     col_left, col_center, col_right = st.columns([1, 3, 1])
 
     with col_center:
@@ -174,9 +173,10 @@ def mudar_pagina(pagina):
 
 # ----------------- Dashboard -----------------
 def dashboard():
+    # 🔧 APLICA O TEMA NO INÍCIO
     from theme import apply_theme
     apply_theme()
-
+    
     # CSS para o dashboard
     st.markdown("""
         <style>
@@ -189,13 +189,14 @@ def dashboard():
                 text-align: center;
                 margin: 30px 0 20px 0;
                 padding: 15px;
-                background-color: #f0f2f6;
+                background-color: var(--secondary-background-color, #f0f2f6);
                 border-radius: 10px;
                 border-left: 5px solid #4CAF50;
+                color: var(--text-color, #333);
             }
             .card-button {
-                background-color: white;
-                border: 2px solid #e0e0e0;
+                background-color: var(--background-color, white);
+                border: 2px solid var(--border-color, #e0e0e0);
                 border-radius: 10px;
                 padding: 25px 15px;
                 text-align: center;
@@ -206,6 +207,7 @@ def dashboard():
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                color: var(--text-color, #333) !important;
             }
             .card-button:hover {
                 border-color: #4CAF50;
@@ -219,11 +221,11 @@ def dashboard():
             .card-title {
                 font-weight: 600;
                 font-size: 14px;
-                color: #333;
+                color: var(--text-color, #333);
             }
             .planilha-button {
-                background-color: white;
-                border: 2px solid #e0e0e0;
+                background-color: var(--background-color, white);
+                border: 2px solid var(--border-color, #e0e0e0);
                 border-radius: 10px;
                 padding: 25px 15px;
                 text-align: center;
@@ -235,32 +237,33 @@ def dashboard():
                 justify-content: center;
                 align-items: center;
                 text-decoration: none;
-                color: #333 !important;
+                color: var(--text-color, #333) !important;
             }
             .planilha-button:hover {
                 border-color: #4CAF50;
                 transform: translateY(-3px);
                 box-shadow: 0 6px 20px rgba(0,0,0,0.1);
                 text-decoration: none;
-                color: #333 !important;
+                color: var(--text-color, #333) !important;
             }
             .planilha-title {
                 font-weight: 600;
                 font-size: 16px !important;
-                color: #333;
+                color: var(--text-color, #333);
                 margin-bottom: 8px;
             }
             .planilha-desc {
                 font-size: 13px !important;
-                color: #666;
+                color: var(--text-color, #666);
                 line-height: 1.3;
             }
             .user-info {
-                background-color: #f8f9fa;
+                background-color: var(--secondary-background-color, #f8f9fa);
                 padding: 15px;
                 border-radius: 8px;
                 border-left: 4px solid #4CAF50;
                 margin-bottom: 15px;
+                color: var(--text-color, #333);
             }
             .frase-container {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -335,8 +338,8 @@ def dashboard():
                 logo = Image.open("villares.png")
                 st.image(logo, width=300)
         with col_title:
-            st.markdown("<h1 style='margin-top:20px; color:white; font-weight:bold;'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
-            st.markdown("<h3 style='color:white;'>Villares Imobiliária</h3>", unsafe_allow_html=True)
+            st.markdown("<h1 style='margin-top:20px; color:var(--text-color, white); font-weight:bold;'>🏢 Central de Documentos</h1>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color:var(--text-color, white);'>Villares Imobiliária</h3>", unsafe_allow_html=True)
 
         st.markdown("---")
         
@@ -409,16 +412,19 @@ def dashboard():
 
     # Chamando scripts
     else:
-
+        # ✅ CONTAINER SIMPLES para páginas internas
+        st.markdown('<div style="max-width: 1200px; margin: 0 auto; padding: 20px;">', unsafe_allow_html=True)
+        
         col_back, col_title = st.columns([1, 4])
         with col_back:
             if st.button("⬅️ VOLTAR", use_container_width=True):
                 mudar_pagina("inicial")
         with col_title:
-            st.markdown(f"<h2 style='color:white; font-weight:bold;'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='color:var(--text-color, white); font-weight:bold;'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
         
         st.markdown("---")
 
+        # ✅ CHAMADA DOS SCRIPTS
         if st.session_state.pagina == "ficha_cadastral":
             import fichaCadastral
             fichaCadastral.app()
@@ -438,7 +444,7 @@ def dashboard():
             import recibo
             recibo.app()
         
-    
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:
