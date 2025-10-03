@@ -46,7 +46,17 @@ def app():
     
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
-    st.title("🏠 CADASTRO DE IMÓVEL")
+    # CORREÇÃO: Botão voltar no topo + compatibilidade
+    if 'pagina' not in st.session_state:
+        st.session_state.pagina = "inicial"
+
+    col_back, col_title = st.columns([1, 4])
+    with col_back:
+        if st.button("⬅️ VOLTAR", use_container_width=True):
+            st.session_state.pagina = "inicial"
+            st.rerun()
+    with col_title:
+        st.title("🏠 CADASTRO DE IMÓVEL")
 
     # ----------------- Valor / Tipo de Negócio -----------------
     st.markdown('<div class="section-header"><h3>VALOR / TIPO DE NEGÓCIO</h3></div>', unsafe_allow_html=True)
@@ -405,7 +415,8 @@ def app():
                     use_container_width=True
                 )
     
-    st.markdown('</div>', unsafe_allow_html=True) 
+    # CORREÇÃO: REMOVIDO o fechamento do container
+    # st.markdown('</div>', unsafe_allow_html=True) 
     
 if __name__ == "__main__":
     app()

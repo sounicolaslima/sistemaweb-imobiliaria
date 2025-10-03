@@ -24,9 +24,7 @@ def app():
     from theme import apply_theme
     apply_theme()
     
-    st.title("📋 GERADOR DE TERMO DE VISTORIA")
-
-    st.markdown('<div class="main-container">', unsafe_allow_html=True)
+    st.set_page_config(page_title="Gerador de Termo de Vistoria", layout="centered")
     
     # CSS ORIGINAL mantido
     st.markdown("""
@@ -55,6 +53,18 @@ def app():
     
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
+    # CORREÇÃO: Botão voltar no topo + compatibilidade
+    if 'pagina' not in st.session_state:
+        st.session_state.pagina = "inicial"
+
+    col_back, col_title = st.columns([1, 4])
+    with col_back:
+        if st.button("⬅️ VOLTAR", use_container_width=True):
+            st.session_state.pagina = "inicial"
+            st.rerun()
+    with col_title:
+        st.title("📋 GERADOR DE TERMO DE VISTORIA")
+
     # Inicializar session states
     if "fiadores" not in st.session_state:
         st.session_state.fiadores = [{"nome": "", "cpf": "", "rg": "", "endereco": "", "telefone": ""}]
@@ -382,9 +392,9 @@ def app():
                 import traceback
                 st.error(f"Detalhes: {traceback.format_exc()}")
     
-    st.markdown('</div>', unsafe_allow_html=True)
+    # CORREÇÃO: REMOVIDO o fechamento do container
+    # st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Executar -----------------
 if __name__ == "__main__":
     app()
-    

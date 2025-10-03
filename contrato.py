@@ -137,7 +137,17 @@ def app():
     
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
     
-    st.title("📄 CONTRATO DE LOCAÇÃO")
+    # CORREÇÃO: Botão voltar no topo + compatibilidade
+    if 'pagina' not in st.session_state:
+        st.session_state.pagina = "inicial"
+
+    col_back, col_title = st.columns([1, 4])
+    with col_back:
+        if st.button("⬅️ VOLTAR", use_container_width=True):
+            st.session_state.pagina = "inicial"
+            st.rerun()
+    with col_title:
+        st.title("📄 CONTRATO DE LOCAÇÃO")
 
     dados_ficha = {}
 
@@ -311,7 +321,8 @@ def app():
         if st.button("📄 GERAR CONTRATO DE LOCAÇÃO", use_container_width=True, type="primary"):
             gerar_contrato(dados_ficha)
     
-    st.markdown('</div>', unsafe_allow_html=True)
+    # CORREÇÃO: REMOVIDO o fechamento do container
+    # st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Executar -----------------
 if __name__ == "__main__":

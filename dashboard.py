@@ -409,9 +409,10 @@ def dashboard():
         
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Chamando scripts - CORRIGIDO: sem container conflitante
+    # CORREÇÃO: Container único que engloba TUDO
     else:
-        # CORREÇÃO: Removido o container que quebrava o botão voltar
+        st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
+        
         col_back, col_title = st.columns([1, 4])
         with col_back:
             if st.button("⬅️ VOLTAR", use_container_width=True):
@@ -444,6 +445,9 @@ def dashboard():
         except Exception as e:
             st.error(f"Erro ao carregar a página: {e}")
             st.info("Tente voltar para a página inicial e acessar novamente.")
+        
+        # FECHAR container APÓS todos os formulários
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:
