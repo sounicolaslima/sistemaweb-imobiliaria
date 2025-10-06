@@ -409,36 +409,28 @@ def dashboard():
             )
 
     else:
-        # CORREÇÃO: Apenas o botão voltar - SEM TÍTULO
-        # O título virá de cada página individual
-        col_back, col_space = st.columns([1, 5])
-        with col_back:
-            if st.button("⬅️ VOLTAR", use_container_width=True, key="voltar_dashboard"):
-                mudar_pagina("inicial")
-        
-        st.markdown("---")
-
-        # Importação dinâmica das páginas
-        # AGORA cada página mostra SEU PRÓPRIO título
+        # CORREÇÃO: NEM BOTÃO VOLTAR NEM TÍTULO no dashboard
+        # As páginas individuais cuidam de TUDO
+        # Apenas importa a página diretamente
         try:
             if st.session_state.pagina == "ficha_cadastral":
                 import fichaCadastral
-                fichaCadastral.app()  # ← Esta função mostra SEU título
+                fichaCadastral.app()  # ← Esta função mostra SEU título e SEU botão voltar
             elif st.session_state.pagina == "contrato_administrativo":
                 import contratoAdministracao
-                contratoAdministracao.app()  # ← Esta função mostra SEU título
+                contratoAdministracao.app()  # ← Esta função mostra SEU título e SEU botão voltar
             elif st.session_state.pagina == "contrato":
                 import contrato
-                contrato.app()  # ← Esta função mostra SEU título
+                contrato.app()  # ← Esta função mostra SEU título e SEU botão voltar
             elif st.session_state.pagina == "ficha_captacao":
                 import cadastroImovel
-                cadastroImovel.app()  # ← Esta função mostra SEU título
+                cadastroImovel.app()  # ← Esta função mostra SEU título e SEU botão voltar
             elif st.session_state.pagina == "termo_vistoria":
                 import termo_vistoria
-                termo_vistoria.app()  # ← Esta função mostra SEU título
+                termo_vistoria.app()  # ← Esta função mostra SEU título e SEU botão voltar
             elif st.session_state.pagina == "recibo":
                 import recibo
-                recibo.app()  # ← Esta função mostra SEU título
+                recibo.app()  # ← Esta função mostra SEU título e SEU botão voltar
         except Exception as e:
             st.error(f"Erro ao carregar a página: {e}")
             st.info("Tente voltar para a página inicial e acessar novamente.")
