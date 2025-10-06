@@ -179,13 +179,21 @@ def dashboard():
     from theme import apply_theme
     apply_theme()
     
-    # CSS para o dashboard (MANTIDO ORIGINAL)
+    # CSS para o dashboard - CORRIGIDO para páginas individuais
     st.markdown("""
         <style>
             .main-dashboard-container {
                 max-width: 1200px;
                 margin: 0 auto;
+            }
+            /* Página inicial tem padding */
+            .dashboard-inicial {
                 padding: 20px;
+            }
+            /* Páginas individuais SEM padding - começam do topo */
+            .pagina-individual {
+                padding: 0 !important;
+                margin: 0 !important;
             }
             .section-header {
                 text-align: center;
@@ -327,10 +335,10 @@ def dashboard():
         if st.button("🏠 Página Inicial", use_container_width=True, key="pagina_inicial_sidebar"):
             mudar_pagina("inicial")
 
-    # CORREÇÃO: Container ÚNICO que engloba TUDO
-    st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
-    
+    # Container principal - AGORA com classes diferentes
     if st.session_state.pagina == "inicial":
+        st.markdown('<div class="main-dashboard-container dashboard-inicial">', unsafe_allow_html=True)
+        
         # Cabeçalho com logo e título
         col_logo, col_title = st.columns([1, 3])
         with col_logo:
@@ -407,36 +415,34 @@ def dashboard():
                 """,
                 unsafe_allow_html=True
             )
+        
+        st.markdown('</div>', unsafe_allow_html=True)
 
     else:
-        # CORREÇÃO: NEM BOTÃO VOLTAR NEM TÍTULO no dashboard
-        # As páginas individuais cuidam de TUDO
-        # Apenas importa a página diretamente
+        # Páginas individuais - SEM container com padding
+        # Começam direto do topo da tela
         try:
             if st.session_state.pagina == "ficha_cadastral":
                 import fichaCadastral
-                fichaCadastral.app()  # ← Esta função mostra SEU título e SEU botão voltar
+                fichaCadastral.app()
             elif st.session_state.pagina == "contrato_administrativo":
                 import contratoAdministracao
-                contratoAdministracao.app()  # ← Esta função mostra SEU título e SEU botão voltar
+                contratoAdministracao.app()
             elif st.session_state.pagina == "contrato":
                 import contrato
-                contrato.app()  # ← Esta função mostra SEU título e SEU botão voltar
+                contrato.app()
             elif st.session_state.pagina == "ficha_captacao":
                 import cadastroImovel
-                cadastroImovel.app()  # ← Esta função mostra SEU título e SEU botão voltar
+                cadastroImovel.app()
             elif st.session_state.pagina == "termo_vistoria":
                 import termo_vistoria
-                termo_vistoria.app()  # ← Esta função mostra SEU título e SEU botão voltar
+                termo_vistoria.app()
             elif st.session_state.pagina == "recibo":
                 import recibo
-                recibo.app()  # ← Esta função mostra SEU título e SEU botão voltar
+                recibo.app()
         except Exception as e:
             st.error(f"Erro ao carregar a página: {e}")
             st.info("Tente voltar para a página inicial e acessar novamente.")
-    
-    # FECHAR container
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:
