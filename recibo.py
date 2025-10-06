@@ -84,18 +84,6 @@ def app():
     with col_title:
         st.title("📄 Recibo de Aluguel")
 
-    # Verificação do template
-    if not os.path.exists(TEMPLATE_RECIBO):
-        st.error(f"❌ {TEMPLATE_RECIBO} não encontrado")
-        st.info("""
-        **Por favor verifique:**
-        1. O arquivo 'recibo.docx' está na mesma pasta do script
-        2. O nome do arquivo está correto
-        3. O arquivo não está corrompido
-        """)
-    else:
-        st.success("✅ Template encontrado!")
-
     # Formulário principal
     with st.form("recibo_form"):
         st.subheader("📝 Dados do Recibo")
