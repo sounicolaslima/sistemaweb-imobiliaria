@@ -327,9 +327,10 @@ def dashboard():
         if st.button("🏠 Página Inicial", use_container_width=True, key="pagina_inicial_sidebar"):
             mudar_pagina("inicial")
 
+    # CORREÇÃO: Container ÚNICO que engloba TUDO
+    st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
+    
     if st.session_state.pagina == "inicial":
-        st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
-        
         # Cabeçalho com logo e título
         col_logo, col_title = st.columns([1, 3])
         with col_logo:
@@ -406,48 +407,44 @@ def dashboard():
                 """,
                 unsafe_allow_html=True
             )
-        
-        st.markdown('</div>', unsafe_allow_html=True)
 
-    # CORREÇÃO: Container único que engloba TUDO
     else:
-        st.markdown('<div class="main-dashboard-container">', unsafe_allow_html=True)
-        
-        col_back, col_title = st.columns([1, 4])
+        # CORREÇÃO: Apenas o botão voltar - SEM TÍTULO
+        # O título virá de cada página individual
+        col_back, col_space = st.columns([1, 5])
         with col_back:
             if st.button("⬅️ VOLTAR", use_container_width=True, key="voltar_dashboard"):
                 mudar_pagina("inicial")
-        with col_title:
-            st.markdown(f"<h2 style='color:#333;'>📄 {st.session_state.pagina.upper().replace('_', ' ')}</h2>", unsafe_allow_html=True)
         
         st.markdown("---")
 
         # Importação dinâmica das páginas
+        # AGORA cada página mostra SEU PRÓPRIO título
         try:
             if st.session_state.pagina == "ficha_cadastral":
                 import fichaCadastral
-                fichaCadastral.app()
+                fichaCadastral.app()  # ← Esta função mostra SEU título
             elif st.session_state.pagina == "contrato_administrativo":
                 import contratoAdministracao
-                contratoAdministracao.app()
+                contratoAdministracao.app()  # ← Esta função mostra SEU título
             elif st.session_state.pagina == "contrato":
                 import contrato
-                contrato.app()
+                contrato.app()  # ← Esta função mostra SEU título
             elif st.session_state.pagina == "ficha_captacao":
                 import cadastroImovel
-                cadastroImovel.app()
+                cadastroImovel.app()  # ← Esta função mostra SEU título
             elif st.session_state.pagina == "termo_vistoria":
                 import termo_vistoria
-                termo_vistoria.app()
+                termo_vistoria.app()  # ← Esta função mostra SEU título
             elif st.session_state.pagina == "recibo":
                 import recibo
-                recibo.app()
+                recibo.app()  # ← Esta função mostra SEU título
         except Exception as e:
             st.error(f"Erro ao carregar a página: {e}")
             st.info("Tente voltar para a página inicial e acessar novamente.")
-        
-        # FECHAR container APÓS todos os formulários
-        st.markdown('</div>', unsafe_allow_html=True)
+    
+    # FECHAR container
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ----------------- Execução -----------------
 if not st.session_state.logged_in:
