@@ -99,40 +99,40 @@ def app():
     # Linha 2 - Bairro, Cidade, UF
     col1, col2, col3 = st.columns(3)
     with col1:
-        bairroImovel = st.text_input("Bairro", placeholder="Centro")
+        bairroImovel = st.text_input("Bairro", placeholder="Ex: Centro")
     with col2:
-        cidadeImovel = st.text_input("Cidade", placeholder="Lavras")
+        cidadeImovel = st.text_input("Cidade", placeholder="Ex: Lavras")
     with col3:
-        UFImovel = st.text_input("UF", placeholder="MG", max_chars=2)
+        UFImovel = st.text_input("UF", placeholder="Ex: MG", max_chars=2)
 
     # Linha 3 - Quartos, Suítes, Cozinha, Área Total
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        quartoImovel = st.text_input("Quartos", placeholder="3")
+        quartoImovel = st.text_input("Quartos", placeholder="Ex: 3")
     with col2:
-        suiteImovel = st.text_input("Suítes", placeholder="1")
+        suiteImovel = st.text_input("Suítes", placeholder="Ex: 1")
     with col3:
-        cozinhImovel = st.text_input("Cozinhas", placeholder="1")
+        cozinhImovel = st.text_input("Cozinhas", placeholder="Ex: 1")
     with col4:
-        ATImovel = st.text_input("Área Total (m²)", placeholder="150")
+        ATImovel = st.text_input("Área Total (m²)", placeholder="Ex: 150")
 
     # Linha 4 - Salas, Copa, Banheiro, Área Construída
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        salaImovel = st.text_input("Salas", placeholder="2")
+        salaImovel = st.text_input("Salas", placeholder="Ex: 2")
     with col2:
-        copaImovel = st.text_input("Copas", placeholder="1")
+        copaImovel = st.text_input("Copas", placeholder="Ex: 1")
     with col3:
-        banheiroImovel = st.text_input("Banheiros", placeholder="2")
+        banheiroImovel = st.text_input("Banheiros", placeholder="Ex: 2")
     with col4:
-        ACImovel = st.text_input("Área Construída (m²)", placeholder="120")
+        ACImovel = st.text_input("Área Construída (m²)", placeholder="Ex: 120")
 
     # Linha 5 - Quintal, Garagem, Área de Serviço
     col1, col2, col3 = st.columns(3)
     with col1:
         Quintal = st.text_input("Quintal", placeholder="Sim/Não")
     with col2:
-        GaragemImovel = st.text_input("Vagas Garagem", placeholder="2")
+        GaragemImovel = st.text_input("Vagas Garagem", placeholder="Ex: 2")
     with col3:
         areaServImovel = st.text_input("Área de Serviço", placeholder="Sim/Não")
 
@@ -266,10 +266,12 @@ def app():
     # ----------------- Situação das Chaves -----------------
     st.markdown('<div class="section-header"><h3>SITUAÇÃO DAS CHAVES</h3></div>', unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        copiaVillares = st.checkbox("Cópia Villares Imóveis")
+        qtdChaves = st.number_input("Quantidade de Chaves", min_value=0, max_value=10, value=1, step=1)
     with col2:
+        copiaVillares = st.checkbox("Cópia Villares Imóveis")
+    with col3:
         copiaProprietario = st.checkbox("Cópia do Proprietário")
 
     # ----------------- Função gerar ficha -----------------
@@ -381,6 +383,7 @@ def app():
             "nomeCaptador": nomeCaptador or "",
             
             # Chaves
+            "qtdChaves": str(qtdChaves),  # NOVO CAMPO - Quantidade de chaves
             "copiaVillares": "✓" if copiaVillares else "",
             "copiaProprietario": "✓" if copiaProprietario else "",
         }
