@@ -8,18 +8,48 @@ from io import BytesIO
 base_dir = os.path.dirname(__file__)
 TEMPLATE_RECIBO = os.path.join(base_dir, "recibo.docx")
 
+def converter_para_float(valor):
+    """Converte string de valor para float, tratando vírgula como decimal"""
+    try:
+        if not valor or valor == '':
+            return 0.0
+        # Remove possíveis R$ e espaços, substitui vírgula por ponto
+        valor_limpo = str(valor).replace('R$', '').replace(' ', '').replace('.', '').replace(',', '.')
+        return float(valor_limpo)
+    except:
+        return 0.0
+
+def formatar_para_real(valor):
+    """Formata float para string no formato monetário brasileiro"""
+    try:
+        # Formata para 2 casas decimais e substitui ponto por vírgula
+        return f"{valor:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+    except:
+        return "0,00"
+
 def calcular_total(recibo):
     """Calcula o total do recibo"""
     try:
-        total = (float(recibo.get('valorAluguel', '0').replace(',', '.')) +
-                float(recibo.get('valorAgua', '0').replace(',', '.')) +
-                float(recibo.get('valorLuz', '0').replace(',', '.')) +
-                float(recibo.get('valorIPTU', '0').replace(',', '.')) +
-                float(recibo.get('valorCondominio', '0').replace(',', '.')) +
-                float(recibo.get('valorMulta', '0').replace(',', '.')) -
-                float(recibo.get('desconto', '0').replace(',', '.')))
-        return f"{total:,.2f}".replace('.', 'X').replace(',', '.').replace('X', ',')
-    except:
+        # Converter todos os valores para float
+        aluguel = converter_para_float(recibo.get('valorAluguel', '0'))
+        agua = converter_para_float(recibo.get('valorAgua', '0'))
+        luz = converter_para_float(recibo.get('valorLuz', '0'))
+        iptu = converter_para_float(recibo.get('valorIPTU', '0'))
+        condominio = converter_para_float(recibo.get('valorCondominio', '0'))
+        multa = converter_para_float(recibo.get('valorMulta', '0'))
+        desconto = converter_para_float(recibo.get('desconto', '0'))
+        
+        # Calcular total (desconto é subtraído)
+        total = aluguel + agua + luz + iptu + condominio + multa - desconto
+        
+        # Garantir que o total não seja negativo
+        total = max(total, 0.0)
+        
+        # Formatar para o padrão brasileiro
+        return formatar_para_real(total)
+        
+    except Exception as e:
+        st.error(f"Erro no cálculo do total: {e}")
         return '0,00'
 
 def gerar_recibo(dados):
@@ -70,7 +100,6 @@ def app():
 
     st.set_page_config(page_title="Recibo de Aluguel", page_icon="🏠", layout="centered")
     
-    # CORREÇÃO: Botão voltar no topo + compatibilidade
     if 'pagina' not in st.session_state:
         st.session_state.pagina = "inicial"
 
@@ -116,7 +145,7 @@ def app():
             gerar = st.form_submit_button("🔄 Gerar Recibo", type="primary", use_container_width=True)
 
     # Processar visualização do recibo
-    if visualizar and os.path.exists(TEMPLATE_RECIBO):
+    if visualizar:
         recibo = {
             'nomeLocatario': nomeLocatario,
             'enderecoImovel': enderecoImovel,
@@ -134,9 +163,12 @@ def app():
             'data': data
         }
         
+        # Calcular totais individuais para demonstração
+        total_calculado = calcular_total(recibo)
+        
         st.subheader("👀 Visualização do Recibo")
         
-        # Mostrar resumo detalhado
+        # Mostrar resumo detalhado com cálculo
         col1, col2 = st.columns(2)
         with col1:
             st.write("**Dados do Recibo:**")
@@ -156,12 +188,16 @@ def app():
             st.write(f"**Condomínio:** R$ {valorCondominio or '0,00'}")
             st.write(f"**Multa:** R$ {valorMulta or '0,00'}")
             st.write(f"**Desconto:** R$ {desconto or '0,00'}")
-            st.success(f"**TOTAL: R$ {calcular_total(recibo)}**")
+            
+            # Mostrar cálculo passo a passo
+            st.write("**Cálculo:**")
+            st.write(f"Aluguel + Água + Luz + IPTU + Condomínio + Multa - Desconto")
+            st.success(f"**TOTAL: R$ {total_calculado}**")
         
         st.info("💡 **Verifique os dados acima. Se estiverem corretos, clique em 'Gerar Recibo' para criar o arquivo Word.**")
 
     # Processar geração do recibo
-    if gerar and os.path.exists(TEMPLATE_RECIBO):
+    if gerar:
         recibo = {
             'nomeLocatario': nomeLocatario,
             'enderecoImovel': enderecoImovel,
@@ -209,11 +245,8 @@ def app():
     4. Clique em **📥 Baixar Recibo** para salvar o arquivo
     5. Imprima o recibo gerado
     
+    **Dica:** Use vírgula para centavos (ex: 1500,50 para mil e quinhentos reais e cinquenta centavos)
     """)
-    
-    # CORREÇÃO: REMOVIDO o fechamento do container
-    # st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     app()
-    
