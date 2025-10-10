@@ -109,10 +109,11 @@ def app():
     with col1:
         nomeLocatario = st.text_input("Nome", value=st.session_state.get("nomeLocatario", ""), placeholder="Nome completo do locatário")
         RG = st.text_input("RG", value=st.session_state.get("RG", ""), placeholder="00.000.000-0")
+        cpf_locatario = st.text_input("CPF Locatário", value=st.session_state.get("cpf_locatario", cpf), placeholder="000.000.000-00")  # NOVO CAMPO
         endereco = st.text_input("Endereço", value=st.session_state.get("endereco", ""), placeholder="Endereço completo")
-        valorLocacao = st.text_input("Valor Locação", value=st.session_state.get("valorLocacao", ""), placeholder="R$ 0,00")
     
     with col2:
+        valorLocacao = st.text_input("Valor Locação", value=st.session_state.get("valorLocacao", ""), placeholder="R$ 0,00")
         dataEntrada = st.text_input("Data Entrada", value=st.session_state.get("dataEntrada", ""), placeholder="DD/MM/AAAA")
         dataVenc = st.text_input("Vencimento", value=st.session_state.get("dataVenc", ""), placeholder="DD/MM")
         celular = st.text_input("Celular", value=st.session_state.get("celular", ""), placeholder="(00) 00000-0000")
@@ -204,7 +205,7 @@ def app():
         matriculaCopasa = st.text_input("COPASA Matrícula", value=st.session_state.get("matriculaCopasa", ""), placeholder="Número da matrícula")
     
     with col2:
-        IPTU = st.text_input("IPTU", value=st.session_state.get("IPTU", ""), placeholder="Valor do IPTU")
+        IPTU = st.text_input("IPTU", value=st.session_state.get("IPTU", ""), placeholder="IPTU")
 
     # ----------------- Função gerar ficha -----------------
     def gerar_ficha_streamlit():
@@ -214,7 +215,7 @@ def app():
 
         doc = DocxTemplate(CAMINHO_DOCX)
         dados = {
-            "cpf": cpf,
+            "cpf": cpf_locatario,  # AGORA USA O CPF DO CAMPO ESPECÍFICO
             "nomeLocatario": nomeLocatario,
             "RG": RG,
             "endereco": endereco,
@@ -293,9 +294,6 @@ def app():
                     mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                     use_container_width=True
                 )
-    
-    # CORREÇÃO: REMOVIDO o fechamento do container
-    # st.markdown('</div>', unsafe_allow_html=True) 
     
 if __name__ == "__main__":
     app()
